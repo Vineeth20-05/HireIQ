@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
+ {% block content %}
 
-{% block content %}
+<h1>🚀 HireIQ</h1>
 
-<h1>AI Recruitment Intelligence Platform</h1>
+<h2>AI Recruitment Intelligence Platform</h2>
 
-<p>
-Semantic Resume Screening + RAG + AI Interview System
-</p>
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %} {{ form.as_p }}
+
+  <button type="submit">Upload Resume</button>
+</form>
 
 {% endblock %}
