@@ -5,9 +5,18 @@ from sklearn.metrics.pairwise import cosine_similarity
 from dotenv import load_dotenv
 import os
 import uvicorn
+from chroma_utils import vector_store
+import uuid
+from langchain_groq import ChatGroq
 
 load_dotenv()
 hf_token = os.getenv("HF_TOKEN")
+groq_api_key = os.getenv("GROQ_API_KEY")
+
+llm = ChatGroq(
+    groq_api_key=groq_api_key,
+    model="llama-3.3-70b-versatile"
+)
 
 app = FastAPI(
     title="HireIQ AI Engine",
@@ -18,6 +27,7 @@ app = FastAPI(
 model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
 class MatchRequest(BaseModel):
+    candidate_name: str
     resume_text: str
     jd_text: str
 
@@ -31,7 +41,77 @@ def match_score(data: MatchRequest):
     jd_embedding = model.encode([data.jd_text])
     similarity = cosine_similarity(resume_embedding, jd_embedding)[0][0]
     score = round(float(similarity) * 100, 2)
+    vector_store.add_texts(
+    texts=[data.resume_text],
+    metadatas=[{
+    "candidate_name": data.candidate_name,
+    "category": "Software Engineer"
+    }],
+    ids=[str(uuid.uuid4())])
     return {"match_score": score}
+
+@app.get("/search")
+def search_resumes(query: str):
+    results = vector_store.similarity_search(query=query, k=3)
+
+    retrieved_resumes = []
+
+    for doc in results:
+        retrieved_resumes.append({
+            "candidate_name": doc.metadata.get("candidate_name"),
+            "category": doc.metadata.get("category")
+        })
+
+    return {"results": retrieved_resumes}
+
+@app.get("/rag")
+def rag_query(query:str):
+    results=vector_store.similarity_search(query=query,k=2)
+
+    context="\n\n".join([doc.page_content for doc in results])
+
+    prompt=f"""
+    You are an expert AI recruiter assistant.
+
+    Analyze the retrieved resumes and answer professionally.
+
+    Return:
+    1. Best candidate
+    2. Matching skills
+    3. Strengths
+    4. Missing skills
+    5. Final recommendation
+
+    Recruiter Query:
+    {query}
+
+    Resume Context:
+    {context}
+    """
+
+    response=llm.invoke(prompt)
+
+    return {"response":response.content}
+
+@app.get("/rank")
+def rank_candidates(jd:str):
+    results=vector_store.similarity_search_with_score(jd,k=5)
+
+    ranked_candidates=[]
+
+    for doc,score in results:
+        ranked_candidates.append({
+            "candidate_name":doc.metadata.get("candidate_name"),
+            "score":round(100 / (1 + score))
+        })
+
+    ranked_candidates=sorted(
+        ranked_candidates,
+        key=lambda x:x["score"],
+        reverse=True
+    )
+
+    return {"rankings":ranked_candidates}
 
 if __name__ == "__main__":
    uvicorn.run("main:app", host="127.0.0.1", port=8001)

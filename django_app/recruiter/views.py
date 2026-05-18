@@ -18,7 +18,7 @@ def home(request):
             resume.extracted_text = extracted_text
             resume.save()
             jd_text = form.cleaned_data['jd_text']
-            response = requests.post("http://127.0.0.1:8001/match", json={"resume_text": extracted_text, "jd_text": jd_text})
+            response = requests.post("http://127.0.0.1:8001/match", json={"candidate_name": resume.name,"resume_text": extracted_text, "jd_text": jd_text})
             result = response.json()
             score = result['match_score']
     else:
