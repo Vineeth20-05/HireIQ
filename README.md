@@ -1,1 +1,1 @@
-# HireIQ
+#HireIQ: Intelligent AI Recruiter Platform
