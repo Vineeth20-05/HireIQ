@@ -38,7 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'recruiter',
+    'accounts',
+    'recruiter_portal',
+    'candidate_portal',
     'rest_framework',
+
 ]
 
 MIDDLEWARE = [
@@ -131,3 +135,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+AUTH_USER_MODEL='accounts.CustomUser'
