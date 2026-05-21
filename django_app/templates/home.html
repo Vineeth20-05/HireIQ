@@ -11,14 +11,32 @@
     {{ form.as_p }}
 
     <button type="submit">
-        Analyze Resume
+        Analyze Candidates
     </button>
 
 </form>
 
-{% if score %}
+{% if rankings %}
 
-<h2>Match Score: {{ score }}%</h2>
+    <h2>Candidate Rankings</h2>
+
+    <table border="1">
+
+        <tr>
+            <th>Candidate</th>
+            <th>Score</th>
+        </tr>
+
+        {% for candidate in rankings %}
+
+        <tr>
+            <td>{{ candidate.candidate_name }}</td>
+            <td>{{ candidate.score }}%</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
 
 {% endif %}
 

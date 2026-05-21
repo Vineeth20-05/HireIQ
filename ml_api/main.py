@@ -113,6 +113,66 @@ def rank_candidates(jd:str):
 
     return {"rankings":ranked_candidates}
 
+@app.get("/feedback")
+def ats_feedback(query:str):
+    results=vector_store.similarity_search(query=query,k=1)
+
+    context="\n\n".join([doc.page_content for doc in results])
+
+    prompt=f"""
+    You are an expert ATS optimization assistant.
+
+    Analyze the candidate resume against the job requirement.
+
+    Return:
+    1. ATS Match Analysis
+    2. Missing Skills
+    3. Resume Strengths
+    4. Weak Areas
+    5. Improvement Suggestions
+    6. Keywords To Add
+    7. Final ATS Recommendation
+
+    Job Requirement:
+    {query}
+
+    Resume:
+    {context}
+    """
+
+    response=llm.invoke(prompt)
+
+    return {"feedback":response.content}
+
+@app.get("/interview")
+def generate_interview_questions(query:str):
+    results=vector_store.similarity_search(query=query,k=1)
+
+    context="\n\n".join([doc.page_content for doc in results])
+
+    prompt=f"""
+    You are an expert technical interviewer.
+
+    Generate interview questions based on the candidate resume and job requirement.
+
+    Return:
+    1. Technical Questions
+    2. Project-Based Questions
+    3. Problem-Solving Questions
+    4. HR Questions
+    5. Follow-Up Questions
+
+    Job Requirement:
+    {query}
+
+    Candidate Resume:
+    {context}
+    """
+
+    response=llm.invoke(prompt)
+
+    return {"interview_questions":response.content}
+
 if __name__ == "__main__":
    uvicorn.run("main:app", host="127.0.0.1", port=8001)
 
