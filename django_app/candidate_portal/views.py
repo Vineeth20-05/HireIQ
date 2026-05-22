@@ -1,3 +1,90 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from .forms import CandidateForm
+from recruiter.utils import extract_text_from_pdf,extract_text_from_docx
+import requests
 
-# Create your views here.
+@login_required
+def candidate_dashboard(request):
+
+    if request.user.role!="candidate":
+        return HttpResponse("Unauthorized")
+
+    feedback=None
+    interview_questions=None
+
+    if request.method=="POST":
+
+        form=CandidateForm(request.POST,request.FILES)
+
+        if form.is_valid():
+
+            resume=request.FILES["resume"]
+
+            jd_text=form.cleaned_data["jd_text"]
+
+            extracted_text=""
+
+            if resume.name.endswith(".pdf"):
+                extracted_text=extract_text_from_pdf(resume)
+
+            elif resume.name.endswith(".docx"):
+                extracted_text=extract_text_from_docx(resume)
+
+            requests.post(
+                "http://127.0.0.1:8001/store",
+                json={
+                    "candidate_name":request.user.username,
+                    "resume_text":extracted_text,
+                    "jd_text":jd_text
+                }
+            )
+
+            if jd_text:
+
+                feedback_response=requests.get(
+                    "http://127.0.0.1:8001/feedback",
+                    params={
+                        "candidate_name":request.user.username,
+                        "query":jd_text
+                    }
+                )
+
+                interview_response=requests.get(
+                    "http://127.0.0.1:8001/interview",
+                    params={
+                        "candidate_name":request.user.username,
+                        "query":jd_text
+                    }
+                )
+
+                feedback=feedback_response.json()["feedback"]
+
+                interview_questions=interview_response.json()["interview_questions"]
+
+            else:
+
+                feedback_response=requests.get(
+                    "http://127.0.0.1:8001/rag",
+                    params={
+                        "candidate_name":request.user.username,
+                        "query":"Give ATS resume feedback and improvement suggestions"
+                    }
+                )
+
+                feedback=feedback_response.json()["response"]
+
+    else:
+
+        form=CandidateForm()
+
+    return render(
+        request,
+        'candidate/dashboard.html',
+        {
+            'form':form,
+            'feedback':feedback,
+            'interview_questions':interview_questions
+        }
+    )

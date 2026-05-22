@@ -1,0 +1,35 @@
+{% include 'recruiter/navbar.html' %}
+
+<div class="container mt-4">
+    <h1 class="mb-4">AI Interview Assistant</h1>
+
+    <form method="POST" class="mb-4">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="jd_text" class="form-label">Job Description</label>
+            <textarea
+                id="jd_text"
+                name="jd_text"
+                class="form-control"
+                rows="8"
+                placeholder="Paste the job description here..."
+            ></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Generate Interview Questions
+        </button>
+    </form>
+
+    <hr>
+
+    {% if interview_questions %}
+        <h2 class="mt-4">Generated Interview Questions</h2>
+        <div class="card mt-3">
+            <div class="card-body">
+                <pre class="mb-0">{{ interview_questions }}</pre>
+            </div>
+        </div>
+    {% endif %}
+</div>

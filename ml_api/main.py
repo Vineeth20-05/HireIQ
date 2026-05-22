@@ -147,9 +147,7 @@ def ats_feedback(query:str):
 @app.get("/interview")
 def generate_interview_questions(query:str):
     results=vector_store.similarity_search(query=query,k=1)
-
     context="\n\n".join([doc.page_content for doc in results])
-
     prompt=f"""
     You are an expert technical interviewer.
 
@@ -168,10 +166,28 @@ def generate_interview_questions(query:str):
     Candidate Resume:
     {context}
     """
-
     response=llm.invoke(prompt)
-
     return {"interview_questions":response.content}
+
+@app.get("/recruiter-interview")
+def recruiter_interview(query:str):
+    prompt=f"""
+    You are an expert technical interviewer.
+    Generate:
+
+    1. Technical Questions
+    2. HR Questions
+    3. System Design Questions
+    4. Scenario-Based Questions
+    5. Follow-Up Questions
+
+    based on this job description:
+    {query}
+    """
+    response=llm.invoke(prompt)
+    return {
+        "interview_questions":response.content
+    }
 
 if __name__ == "__main__":
    uvicorn.run("main:app", host="127.0.0.1", port=8001)

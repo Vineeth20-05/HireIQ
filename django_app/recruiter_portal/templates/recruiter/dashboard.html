@@ -1,3 +1,52 @@
-<h1>Recruiter Dashboard</h1>
+{% include 'recruiter/navbar.html' %}
 
-<p>Welcome Recruiter</p>
+<div class="container mt-4">
+    <h1 class="mb-4">Recruiter Dashboard</h1>
+
+    <form method="POST" enctype="multipart/form-data" class="mb-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Analyze Candidates</button>
+    </form>
+
+    <hr>
+
+    {% if rankings %}
+        <h2 class="mt-4">Candidate Rankings</h2>
+
+        <table class="table table-striped table-hover mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>Candidate</th>
+                    <th>Score</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for candidate in rankings %}
+                    <tr>
+                        <td>{{ candidate.candidate_name }}</td>
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar bg-success" role="progressbar"
+                                     style="width: {{ candidate.score }}%;" 
+                                     aria-valuenow="{{ candidate.score }}" aria-valuemin="0" aria-valuemax="100">
+                                    {{ candidate.score }}%
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="{{ candidate.resume_url }}" target="_blank" class="btn btn-sm btn-outline-secondary">
+                                View Resume
+                            </a>
+                            <a href="/recruiter/analysis/{{ candidate.candidate_name }}?jd={{ request.POST.jd_text }}" 
+                               class="btn btn-sm btn-outline-info ms-2">
+                                View Feedback
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>

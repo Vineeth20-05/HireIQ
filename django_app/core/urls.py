@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('recruiter.urls')),
     path('accounts/',include('accounts.urls')),
     path('recruiter/',include('recruiter_portal.urls')),
+    path('candidate/',include('candidate_portal.urls')),
 ]
 
 if settings.DEBUG:
