@@ -4,7 +4,7 @@ from recruiter.utils import extract_text_from_pdf, extract_text_from_docx
 import requests
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from recruiter.models import CandidateResume
+from .models import CandidateResume
 
 @login_required
 def recruiter_dashboard(request):

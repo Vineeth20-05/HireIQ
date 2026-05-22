@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'recruiter_portal',
     'candidate_portal',
     'rest_framework',
+    'tailwind',
+    'theme',
+
+    
 
 ]
 
@@ -137,3 +141,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL='accounts.CustomUser'
+
+TAILWIND_APP_NAME='theme'
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
