@@ -143,4 +143,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL='accounts.CustomUser'
 
 TAILWIND_APP_NAME='theme'
+
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"

@@ -1,13 +1,84 @@
-<h1>Register</h1>
+{% extends 'base.html' %} {% block content %}
 
-<form method="POST">
+<div class="flex justify-center items-center min-h-[80vh]">
+  <div class="card w-full max-w-lg bg-base-100 shadow-2xl">
+    <div class="card-body">
+      <h1 class="text-3xl font-bold text-center text-primary">
+        Create Account
+      </h1>
 
-    {% csrf_token %}
+      <p class="text-center text-gray-500">
+        Join HireIQ AI Recruitment Platform
+      </p>
+      {% if form.errors %}
 
-    {{ form.as_p }}
+      <div class="alert alert-error mt-4">
+        <ul>
+          {% for field in form %} {% for error in field.errors %}
 
-    <button type="submit">
-        Register
-    </button>
+          <li><strong>{{ field.label }}</strong> : {{ error }}</li>
 
-</form>
+          {% endfor %} {% endfor %}
+        </ul>
+      </div>
+
+      {% endif %}
+
+      <form method="POST" class="space-y-4 mt-6">
+        {% csrf_token %}
+
+        <div>
+          <label class="label">
+            <span class="label-text"> Username </span>
+          </label>
+
+          {{ form.username }}
+        </div>
+
+        <div>
+          <label class="label">
+            <span class="label-text"> Email </span>
+          </label>
+
+          {{ form.email }}
+        </div>
+
+        <div>
+          <label class="label">
+            <span class="label-text"> Role </span>
+          </label>
+
+          {{ form.role }}
+        </div>
+
+        <div>
+          <label class="label">
+            <span class="label-text"> Password </span>
+          </label>
+
+          {{ form.password1 }}
+        </div>
+
+        <div>
+          <label class="label">
+            <span class="label-text"> Confirm Password </span>
+          </label>
+
+          {{ form.password2 }}
+        </div>
+
+        <button class="btn btn-primary w-full">Register</button>
+      </form>
+
+      <p class="text-center mt-4">
+        Already have an account?
+
+        <a href="/accounts/login/" class="text-primary font-semibold">
+          Login
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

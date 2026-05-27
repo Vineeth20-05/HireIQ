@@ -1,43 +1,71 @@
-<h1>Candidate Dashboard</h1>
+{% extends 'base.html' %} {% block content %}
 
-<a href="/accounts/logout/">Logout</a>
+<div class="flex justify-between items-center mb-8">
+  <div>
+    <h1 class="text-4xl font-bold">Candidate Dashboard</h1>
 
-<hr>
+    <p class="text-gray-500 mt-2">
+      Optimize your resume and prepare for interviews using AI
+    </p>
+  </div>
+</div>
 
-<form method="POST" enctype="multipart/form-data">
+<div class="card bg-base-100 shadow-xl">
+  <div class="card-body">
+    <h2 class="card-title text-2xl">Upload Resume</h2>
 
-    {% csrf_token %}
+    <form method="POST" enctype="multipart/form-data" class="space-y-6 mt-4">
+      {% csrf_token %}
 
-    {{ form.as_p }}
+      <div>
+        <label class="label">
+          <span class="label-text text-lg"> Resume </span>
+        </label>
 
-    <button type="submit">
-        Analyze Resume
-    </button>
+        {{ form.resume }}
+      </div>
 
-</form>
+      <div>
+        <label class="label">
+          <span class="label-text text-lg"> Job Description (Optional) </span>
+        </label>
 
-<hr>
+        {{ form.jd_text }}
+      </div>
+
+      <button class="btn btn-primary btn-wide">Analyze Resume</button>
+    </form>
+  </div>
+</div>
 
 {% if feedback %}
 
-<h2>ATS Feedback</h2>
+<div class="card bg-base-100 shadow-xl mt-10">
+  <div class="card-body">
+    <h2 class="card-title text-2xl">ATS Feedback</h2>
 
-<div style="border:1px solid black;padding:15px;margin-top:10px;">
+    <pre class="whitespace-pre-wrap mt-4">
 
-    <pre>{{ feedback }}</pre>
+{{ feedback }}
 
+        </pre
+    >
+  </div>
 </div>
 
-{% endif %}
+{% endif %} {% if interview_questions %}
 
-{% if interview_questions %}
+<div class="card bg-base-100 shadow-xl mt-10">
+  <div class="card-body">
+    <h2 class="card-title text-2xl">AI Interview Preparation</h2>
 
-<h2>Interview Questions</h2>
+    <pre class="whitespace-pre-wrap mt-4">
 
-<div style="border:1px solid black;padding:15px;margin-top:10px;">
+{{ interview_questions }}
 
-    <pre>{{ interview_questions }}</pre>
-
+        </pre
+    >
+  </div>
 </div>
 
-{% endif %}
+{% endif %} {% endblock %}

@@ -9,7 +9,7 @@ def register_view(request):
         if form.is_valid():
             print("FORM VALID")
             form.save()
-            return redirect('/accounts/register/')
+            return redirect('/accounts/login/')
         else:
             print(form.errors)
     else:

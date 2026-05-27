@@ -1,43 +1,62 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block content %}
 
-{% block content %}
+<div class="hero min-h-[80vh] bg-base-200 rounded-3xl">
+  <div class="hero-content text-center">
+    <div class="max-w-3xl">
+      <h1 class="text-6xl font-bold leading-tight">
+        AI-Powered Recruitment Intelligence Platform
+      </h1>
 
-<h1>HireIQ</h1>
+      <p class="py-8 text-lg text-gray-500">
+        HireIQ helps recruiters and candidates leverage AI for smarter hiring,
+        resume analysis, ATS optimization, semantic candidate ranking, and
+        interview preparation.
+      </p>
 
-<form method="POST" enctype="multipart/form-data">
+      <div class="flex justify-center gap-4">
+        <a href="/accounts/register/" class="btn btn-primary btn-lg">
+          Get Started
+        </a>
 
-    {% csrf_token %}
+        <a href="/accounts/login/" class="btn btn-outline btn-lg"> Login </a>
+      </div>
+    </div>
+  </div>
+</div>
 
-    {{ form.as_p }}
+<div class="grid md:grid-cols-3 gap-8 mt-16">
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title">AI Resume Screening</h2>
 
-    <button type="submit">
-        Analyze Candidates
-    </button>
+      <p>
+        Semantic ranking and ATS-powered resume analysis using advanced AI
+        embeddings and retrieval systems.
+      </p>
+    </div>
+  </div>
 
-</form>
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title">Recruiter Intelligence</h2>
 
-{% if rankings %}
+      <p>
+        AI-driven recruiter workflows with candidate ranking, feedback
+        generation, and interview assistance.
+      </p>
+    </div>
+  </div>
 
-    <h2>Candidate Rankings</h2>
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title">Candidate Career Support</h2>
 
-    <table border="1">
-
-        <tr>
-            <th>Candidate</th>
-            <th>Score</th>
-        </tr>
-
-        {% for candidate in rankings %}
-
-        <tr>
-            <td>{{ candidate.candidate_name }}</td>
-            <td>{{ candidate.score }}%</td>
-        </tr>
-
-        {% endfor %}
-
-    </table>
-
-{% endif %}
+      <p>
+        Personalized ATS feedback and interview preparation tailored to
+        candidate resumes and career goals.
+      </p>
+    </div>
+  </div>
+</div>
 
 {% endblock %}

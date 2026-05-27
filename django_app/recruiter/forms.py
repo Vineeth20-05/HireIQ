@@ -6,23 +6,31 @@ class MultipleFileInput(forms.ClearableFileInput):
 class MultipleFileField(forms.FileField):
 
     def clean(self,data,initial=None):
-
         single_file_clean=super().clean
-
         if isinstance(data,(list,tuple)):
             result=[single_file_clean(d,initial) for d in data]
-
         else:
             result=[single_file_clean(data,initial)]
-
         return result
 
 class ResumeUploadForm(forms.Form):
-
+    
     resumes=MultipleFileField(
         widget=MultipleFileInput(attrs={"multiple":True})
     )
-
     jd_text=forms.CharField(
         widget=forms.Textarea
     )
+    
+    def __init__(self,*args,**kwargs):
+            super().__init__(*args,**kwargs)
+            self.fields['resumes'].widget.attrs.update(
+                {
+                    'class':'file-input file-input-bordered w-full'
+                }
+            )
+            self.fields['jd_text'].widget.attrs.update(
+                {
+                    'class':'textarea textarea-bordered w-full h-40'
+                }
+            )

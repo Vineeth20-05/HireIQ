@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from recruiter.forms import ResumeUploadForm
 from recruiter.utils import extract_text_from_pdf, extract_text_from_docx
+from .models import CandidateResume
 import requests
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from .models import CandidateResume
+
 
 @login_required
 def recruiter_dashboard(request):
@@ -16,7 +17,8 @@ def recruiter_dashboard(request):
     if request.method == "POST" and form.is_valid():
         resumes = request.FILES.getlist("resumes")
         jd_text = form.cleaned_data["jd_text"]
-
+        requests.delete("http://127.0.0.1:8001/clear")
+        CandidateResume.objects.all().delete()
         for resume_file in resumes:
             candidate_name = resume_file.name.split(".")[0]
             extracted_text = (
@@ -27,6 +29,7 @@ def recruiter_dashboard(request):
             CandidateResume.objects.create(
             candidate_name=candidate_name,
             resume_file=resume_file,
+            extracted_text=extracted_text,
             uploaded_by=request.user)
 
             requests.post("http://127.0.0.1:8001/match", json={
@@ -38,12 +41,15 @@ def recruiter_dashboard(request):
         ranking_response = requests.get("http://127.0.0.1:8001/rank", params={"jd": jd_text})
         rankings = ranking_response.json().get("rankings")
         for candidate in rankings:
-            resume=CandidateResume.objects.filter(candidate_name=candidate["candidate_name"]).first()
+            resume = CandidateResume.objects.filter(candidate_name__icontains=candidate["candidate_name"]).last()
+
             if resume:
-                candidate["resume_url"]=resume.resume_file.url
+                candidate["resume_url"] = (resume.resume_file.url)
+                candidate["resume_id"] = resume.id
 
     return render(request, "recruiter/dashboard.html", {"form": form, "rankings": rankings})
 
+@login_required
 def candidate_analysis(request,candidate_name):
     jd=request.GET.get("jd")
     feedback_response=requests.get(
@@ -59,9 +65,11 @@ def candidate_analysis(request,candidate_name):
         'recruiter/analysis.html',
         {
             'candidate_name':candidate_name,
-            'feedback':feedback
+            'analysis':feedback
         }
     )
+    
+@login_required
 def interview_assistant(request):
     interview_questions=None
     if request.method=="POST":
@@ -78,3 +86,4 @@ def interview_assistant(request):
             'interview_questions':interview_questions
         }
     )
+    

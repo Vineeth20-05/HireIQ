@@ -1,18 +1,85 @@
-<!DOCTYPE html>
+{% load static tailwind_tags %}
+
+<!doctype html>
+
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>HireIQ</title>
-</head>
-<body>
 
-    <nav>
-        <h2>🚀 HireIQ</h2>
-    </nav>
+    {% tailwind_css %}
+  </head>
 
-    {% block content %}
-    {% endblock %}
+  <body class="bg-base-200 min-h-screen">
+    <div class="navbar bg-base-100 shadow-md px-6">
+      <div class="flex-1">
+        <a class="text-2xl font-bold text-primary"> HireIQ </a>
+      </div>
 
-</body>
+      <div class="flex gap-4 items-center">
+
+    <a href="/" class="btn btn-ghost">
+        Home
+    </a>
+
+    {% if user.is_authenticated %}
+
+        {% if user.role == 'recruiter' %}
+
+            <a
+                href="/recruiter/dashboard/"
+                class="btn btn-ghost"
+            >
+                Dashboard
+            </a>
+
+        {% elif user.role == 'candidate' %}
+
+            <a
+                href="/candidate/dashboard/"
+                class="btn btn-ghost"
+            >
+                Dashboard
+            </a>
+
+        {% endif %}
+
+        <span class="font-semibold">
+
+            {{ user.username }}
+
+        </span>
+
+        <a
+            href="/accounts/logout/"
+            class="btn btn-error"
+        >
+            Logout
+        </a>
+
+    {% else %}
+
+        <a
+            href="/accounts/login/"
+            class="btn btn-ghost"
+        >
+            Login
+        </a>
+
+        <a
+            href="/accounts/register/"
+            class="btn btn-primary"
+        >
+            Register
+        </a>
+
+    {% endif %}
+
+</div>
+</div>
+    <div class="container mx-auto p-8">{% block content %} {% endblock %}</div>
+  </body>
 </html>

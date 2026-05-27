@@ -5,7 +5,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 from dotenv import load_dotenv
 import os
 import uvicorn
-from chroma_utils import vector_store
+from chroma_utils import vector_store, client, embedding_model
+from langchain_chroma import Chroma
 import uuid
 from langchain_groq import ChatGroq
 
@@ -114,36 +115,58 @@ def rank_candidates(jd:str):
     return {"rankings":ranked_candidates}
 
 @app.get("/feedback")
-def ats_feedback(query:str):
-    results=vector_store.similarity_search(query=query,k=1)
+def ats_feedback(candidate_name:str,query:str):
+    results = vector_store.similarity_search(
+        query=query,
+        k=5
+    )
+    context = ""
+    for doc in results:
+        if doc.metadata.get("candidate_name") == candidate_name:
+            context = doc.page_content
+            break
 
-    context="\n\n".join([doc.page_content for doc in results])
-
-    prompt=f"""
+    prompt = f"""
     You are an expert ATS optimization assistant.
 
     Analyze the candidate resume against the job requirement.
 
-    Return:
-    1. ATS Match Analysis
-    2. Missing Skills
-    3. Resume Strengths
-    4. Weak Areas
-    5. Improvement Suggestions
-    6. Keywords To Add
-    7. Final ATS Recommendation
+    Return STRICTLY in this structured format:
+
+    ATS SCORE:
+    (score out of 100)
+
+    TECHNICAL SKILLS:
+    (list strong skills)
+
+    MISSING SKILLS:
+    (list missing skills)
+
+    EXPERIENCE EVALUATION:
+    (evaluate candidate experience)
+
+    PROJECT STRENGTH:
+    (analyze projects)
+
+    WEAK AREAS:
+    (mention weaknesses)
+
+    IMPROVEMENT SUGGESTIONS:
+    (how candidate can improve)
+
+    FINAL RECOMMENDATION:
+    (Hire / Consider / Reject)
 
     Job Requirement:
     {query}
 
-    Resume:
+    Candidate Resume:
     {context}
     """
-
-    response=llm.invoke(prompt)
-
-    return {"feedback":response.content}
-
+    response = llm.invoke(prompt)
+    return {
+        "feedback": response.content
+    }
 @app.get("/interview")
 def generate_interview_questions(query:str):
     results=vector_store.similarity_search(query=query,k=1)
@@ -188,7 +211,25 @@ def recruiter_interview(query:str):
     return {
         "interview_questions":response.content
     }
+    
+@app.delete("/clear")
+def clear_vector_db():
+    global vector_store
+    try:
+        client.delete_collection("resumes")
+    except:
+        pass
 
+    vector_store = Chroma(
+        client=client,
+        collection_name="resumes",
+        embedding_function=embedding_model
+    )
+    return {
+        "message":"Vector DB reset successful"
+    }
+    
+    
 if __name__ == "__main__":
    uvicorn.run("main:app", host="127.0.0.1", port=8001)
 
