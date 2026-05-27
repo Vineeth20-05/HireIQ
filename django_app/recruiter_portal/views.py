@@ -29,8 +29,7 @@ def recruiter_dashboard(request):
     if request.method == "POST" and form.is_valid():
         resumes = request.FILES.getlist("resumes")
         jd_text = form.cleaned_data["jd_text"]
-
-        requests.delete("http://127.0.0.1:8001/clear")
+        
         CandidateResume.objects.all().delete()
 
         for resume_file in resumes:
@@ -51,7 +50,9 @@ def recruiter_dashboard(request):
             requests.post("http://127.0.0.1:8001/match", json={
                 "candidate_name": candidate_name,
                 "resume_text": extracted_text,
-                "jd_text": jd_text
+                "jd_text": jd_text,
+                "user_id":str(request.user.id),
+                "role":request.user.role
             })
 
         ranking_response = requests.get("http://127.0.0.1:8001/rank", params={"jd": jd_text})
@@ -114,4 +115,15 @@ def interview_assistant(request):
             'interview_questions':interview_questions
         }
     )
+    
+@login_required
+def ai_hiring_assistant(request):
+    response = None
+    if request.method == "POST":
+        query = request.POST.get("query")
+        rag_response = requests.get("http://127.0.0.1:8001/rag", params={"query": query, "user_id":str(request.user.id)})
+        response = rag_response.json()["response"]
+
+    return render(request, "recruiter/ai_assistant.html", {"response": response})
+
     

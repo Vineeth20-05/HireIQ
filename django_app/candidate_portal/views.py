@@ -36,7 +36,6 @@ def candidate_dashboard(request):
                 else ""
             )
 
-            requests.delete("http://127.0.0.1:8001/clear")
             CandidateResume.objects.filter(uploaded_by=request.user).delete()
 
             CandidateResume.objects.create(
@@ -49,7 +48,9 @@ def candidate_dashboard(request):
             requests.post("http://127.0.0.1:8001/match", json={
                 "candidate_name": request.user.username,
                 "resume_text": extracted_text,
-                "jd_text": jd_text
+                "jd_text": jd_text,
+                "user_id":str(request.user.id),
+                "role":request.user.role
             })
 
             feedback_response = requests.post("http://127.0.0.1:8001/candidate-feedback", json={

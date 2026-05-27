@@ -2,22 +2,15 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-from dotenv import load_dotenv
 import os
 import uvicorn
 from chroma_utils import vector_store, client, embedding_model
 from langchain_chroma import Chroma
 import uuid
-from langchain_groq import ChatGroq
+from langgraph_workflow import workflow
+from llm_config import llm
 
-load_dotenv()
 hf_token = os.getenv("HF_TOKEN")
-groq_api_key = os.getenv("GROQ_API_KEY")
-
-llm = ChatGroq(
-    groq_api_key=groq_api_key,
-    model="llama-3.3-70b-versatile"
-)
 
 app = FastAPI(
     title="HireIQ AI Engine",
@@ -31,6 +24,8 @@ class MatchRequest(BaseModel):
     candidate_name: str
     resume_text: str
     jd_text: str
+    user_id: str
+    role: str
 
 @app.get("/")
 def home():
@@ -46,7 +41,9 @@ def match_score(data: MatchRequest):
     texts=[data.resume_text],
     metadatas=[{
     "candidate_name": data.candidate_name,
-    "category": "Software Engineer"
+    "category": "Software Engineer",
+    "user_id":data.user_id,
+    "role":data.role
     }],
     ids=[str(uuid.uuid4())])
     return {"match_score": score}
@@ -66,60 +63,13 @@ def search_resumes(query: str):
     return {"results": retrieved_resumes}
 
 @app.get("/rag")
-def rag_query(query:str):
-    results=vector_store.similarity_search(query=query,k=2)
+def rag_query(query: str, user_id: str):
+    result = workflow.invoke({
+        "query": query,
+        "user_id": user_id
+    })
+    return {"response": result["final_response"]}
 
-    context="\n\n".join([doc.page_content for doc in results])
-
-    prompt=f"""
-    You are a senior hiring manager at a top technology company.
-
-    Your task is to analyze the retrieved candidate resumes against the recruiter query and identify the best-fit candidate.
-
-    Guidelines:
-    - Think like a real recruiter shortlisting candidates
-    - Focus on technical relevance, experience quality, and project impact
-    - Avoid generic AI explanations
-    - Keep responses concise and practical
-    - Prioritize hiring usefulness
-    - Mention only important insights
-    - Keep each point within 1 short line
-
-    Return STRICTLY in this format:
-
-    BEST MATCHED CANDIDATE:
-    (candidate name)
-
-    WHY THIS CANDIDATE:
-    - strongest matching skill
-    - strongest experience relevance
-    - strongest project/domain relevance
-
-    TOP MATCHING SKILLS:
-    - skill
-    - skill
-    - skill
-
-    MAIN CONCERNS:
-    - missing skill or risk
-    - missing exposure or weakness
-
-    HIRING RECOMMENDATION:
-    (Hire / Consider / Reject)
-
-    RECRUITER SUMMARY:
-    (1-line final recruiter insight)
-
-    Recruiter Query:
-    {query}
-
-    Retrieved Resume Context:
-    {context}
-    """
-
-    response=llm.invoke(prompt)
-
-    return {"response":response.content}
 
 @app.get("/rank")
 def rank_candidates(jd:str):
