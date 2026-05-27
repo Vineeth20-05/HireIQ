@@ -23,9 +23,9 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             if user.role == "recruiter":
-                return redirect('/recruiter/dashboard/')
+                return redirect('/recruiter/home/')
             elif user.role == "candidate":
-                return redirect('/candidate/dashboard/')
+                return redirect('/candidate/home/')
     else:
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})

@@ -10,7 +10,41 @@
   </div>
 </div>
 
-<div class="card bg-base-100 shadow-xl">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+  <div class="card bg-primary text-primary-content shadow-xl">
+    <div class="card-body">
+      <h2 class="text-lg">Resume Upload</h2>
+
+      <p class="text-3xl font-bold">Active</p>
+    </div>
+  </div>
+
+  <div class="card bg-success text-success-content shadow-xl">
+    <div class="card-body">
+      <h2 class="text-lg">ATS Analysis</h2>
+
+      <p class="text-3xl font-bold">Ready</p>
+    </div>
+  </div>
+
+  <div class="card bg-warning text-warning-content shadow-xl">
+    <div class="card-body">
+      <h2 class="text-lg">Interview Prep</h2>
+
+      <p class="text-3xl font-bold">AI</p>
+    </div>
+  </div>
+
+  <div class="card bg-secondary text-secondary-content shadow-xl">
+    <div class="card-body">
+      <h2 class="text-lg">Career Assistant</h2>
+
+      <p class="text-3xl font-bold">Online</p>
+    </div>
+  </div>
+</div>
+
+<div class="card bg-base-100 shadow-xl mb-10">
   <div class="card-body">
     <h2 class="card-title text-2xl">Upload Resume</h2>
 
@@ -27,7 +61,7 @@
 
       <div>
         <label class="label">
-          <span class="label-text text-lg"> Job Description (Optional) </span>
+          <span class="label-text text-lg"> Job Description </span>
         </label>
 
         {{ form.jd_text }}
@@ -40,31 +74,41 @@
 
 {% if feedback %}
 
-<div class="card bg-base-100 shadow-xl mt-10">
+<div class="card bg-base-100 shadow-2xl mb-10">
   <div class="card-body">
-    <h2 class="card-title text-2xl">ATS Feedback</h2>
+    <h2 class="card-title text-2xl text-primary mb-4">ATS Feedback</h2>
 
-    <pre class="whitespace-pre-wrap mt-4">
+    <div class="divider"></div>
+
+    <div class="bg-base-200 rounded-xl p-6">
+      <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
 
 {{ feedback }}
 
-        </pre
-    >
+            </pre
+      >
+    </div>
   </div>
 </div>
 
 {% endif %} {% if interview_questions %}
 
-<div class="card bg-base-100 shadow-xl mt-10">
+<div class="card bg-base-100 shadow-2xl">
   <div class="card-body">
-    <h2 class="card-title text-2xl">AI Interview Preparation</h2>
+    <h2 class="card-title text-2xl text-secondary mb-4">
+      AI Interview Questions
+    </h2>
 
-    <pre class="whitespace-pre-wrap mt-4">
+    <div class="divider"></div>
+
+    <div class="bg-base-200 rounded-xl p-6 max-h-[700px] overflow-y-auto">
+      <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
 
 {{ interview_questions }}
 
-        </pre
-    >
+            </pre
+      >
+    </div>
   </div>
 </div>
 

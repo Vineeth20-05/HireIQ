@@ -1,0 +1,57 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="hero bg-base-100 rounded-3xl shadow-2xl">
+  <div class="hero-content flex-col lg:flex-row gap-16 py-16">
+    <div>
+      <h1 class="text-6xl font-extrabold text-secondary">
+        Build a Stronger Resume with AI
+      </h1>
+
+      <p class="py-6 text-lg leading-8 text-gray-600">
+        Optimize your resume, improve ATS score, prepare for interviews, and
+        enhance your career profile using HireIQ AI tools.
+      </p>
+
+      <a href="/candidate/dashboard/" class="btn btn-secondary btn-lg">
+        Open Candidate Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-secondary">📄 ATS Resume Analysis</h2>
+
+      <p>
+        Upload your resume and receive intelligent ATS feedback to improve your
+        chances of selection.
+      </p>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-secondary">💡 Skill Suggestions</h2>
+
+      <p>
+        Discover missing skills, keywords, and recommendations tailored to job
+        descriptions.
+      </p>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-secondary">🎤 Interview Preparation</h2>
+
+      <p>
+        Practice AI-generated technical and HR interview questions based on your
+        resume and target role.
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

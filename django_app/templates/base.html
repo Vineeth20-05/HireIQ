@@ -14,72 +14,164 @@
   </head>
 
   <body class="bg-base-200 min-h-screen">
-    <div class="navbar bg-base-100 shadow-md px-6">
-      <div class="flex-1">
-        <a class="text-2xl font-bold text-primary"> HireIQ </a>
+    <div class="drawer lg:drawer-open">
+      <input id="sidebar" type="checkbox" class="drawer-toggle" />
+
+      <div class="drawer-content flex flex-col">
+        <div class="navbar bg-base-100 shadow-md px-6">
+          <div class="flex-none lg:hidden">
+            <label for="sidebar" class="btn btn-square btn-ghost"> ☰ </label>
+          </div>
+        </div>
+
+        <main class="p-8">{% block content %} {% endblock %}</main>
       </div>
 
-      <div class="flex gap-4 items-center">
+      <div class="drawer-side">
+        <label for="sidebar" class="drawer-overlay"> </label>
 
-    <a href="/" class="btn btn-ghost">
-        Home
-    </a>
+        <aside
+          class="bg-base-100 w-72 min-h-full shadow-2xl border-r border-base-300"
+        >
+          <div
+            class="p-6 border-b border-base-300 bg-primary text-primary-content"
+          >
+            <h2 class="text-4xl font-extrabold tracking-wide">HireIQ</h2>
 
-    {% if user.is_authenticated %}
+            <p class="text-sm opacity-80 mt-2">AI Recruitment Platform</p>
+          </div>
 
-        {% if user.role == 'recruiter' %}
+          {% if user.is_authenticated %}
 
-            <a
+          <div
+            class="px-6 py-5 border-b border-base-300 flex items-center gap-4"
+          >
+            <div class="avatar placeholder">
+              <div
+                class="bg-primary text-primary-content rounded-full w-14 flex items-center justify-center"
+              >
+                <span class="text-2xl font-bold">
+                  {{ user.username|first|upper }}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="font-bold text-lg">{{ user.username }}</h3>
+
+              <p class="text-sm text-gray-500">{{ user.role|title }}</p>
+            </div>
+          </div>
+
+          {% endif %}
+
+          <ul class="menu p-5 text-base-content text-lg gap-3">
+            <li>
+              {% if user.is_authenticated %} {% if user.role == "recruiter" %}
+
+              <a
+                href="/recruiter/home/"
+                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
+              >
+                🏠 Home
+              </a>
+
+              {% elif user.role == "candidate" %}
+
+              <a
+                href="/candidate/home/"
+                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
+              >
+                🏠 Home
+              </a>
+
+              {% else %}
+
+              <a
+                href="/"
+                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
+              >
+                🏠 Home
+              </a>
+
+              {% endif %} {% else %}
+
+              <a
+                href="/"
+                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
+              >
+                🏠 Home
+              </a>
+
+              {% endif %}
+            </li>
+
+            {% if user.is_authenticated %} {% if user.role == "recruiter" %}
+
+            <li>
+              <a
                 href="/recruiter/dashboard/"
-                class="btn btn-ghost"
-            >
-                Dashboard
-            </a>
+                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
+              >
+                📊 Recruiter Dashboard
+              </a>
+            </li>
 
-        {% elif user.role == 'candidate' %}
+            <li>
+              <a
+                href="/recruiter/interview-assistant/"
+                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
+              >
+                🤖 Interview Assistant
+              </a>
+            </li>
 
-            <a
+            {% elif user.role == "candidate" %}
+
+            <li>
+              <a
                 href="/candidate/dashboard/"
-                class="btn btn-ghost"
-            >
-                Dashboard
-            </a>
+                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
+              >
+                👨‍💻 Candidate Dashboard
+              </a>
+            </li>
 
-        {% endif %}
+            {% endif %}
 
-        <span class="font-semibold">
+            <li class="mt-6">
+              <a
+                href="/accounts/logout/"
+                class="rounded-xl bg-error text-white hover:opacity-90 transition-all duration-200"
+              >
+                🚪 Logout
+              </a>
+            </li>
 
-            {{ user.username }}
+            {% else %}
 
-        </span>
+            <li>
+              <a
+                href="/accounts/login/"
+                class="rounded-xl border border-base-300 hover:bg-primary hover:text-white hover:border-primary transition-all duration-200"
+              >
+                🔐 Login
+              </a>
+            </li>
 
-        <a
-            href="/accounts/logout/"
-            class="btn btn-error"
-        >
-            Logout
-        </a>
+            <li>
+              <a
+                href="/accounts/register/"
+                class="rounded-xl border border-base-300 hover:bg-primary hover:text-white hover:border-primary transition-all duration-200"
+              >
+                ✨ Register
+              </a>
+            </li>
 
-    {% else %}
-
-        <a
-            href="/accounts/login/"
-            class="btn btn-ghost"
-        >
-            Login
-        </a>
-
-        <a
-            href="/accounts/register/"
-            class="btn btn-primary"
-        >
-            Register
-        </a>
-
-    {% endif %}
-
-</div>
-</div>
-    <div class="container mx-auto p-8">{% block content %} {% endblock %}</div>
+            {% endif %}
+          </ul>
+        </aside>
+      </div>
+    </div>
   </body>
 </html>

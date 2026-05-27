@@ -3,7 +3,7 @@
 <div class="max-w-5xl mx-auto">
   <div class="flex justify-between items-center mb-8">
     <div>
-      <h1 class="text-4xl font-bold">Candidate Analysis</h1>
+      <h1 class="text-4xl font-bold">{{ candidate_name }}</h1>
 
       <p class="text-gray-500 mt-2">
         AI-generated ATS and resume intelligence report
@@ -17,12 +17,12 @@
 
   <div class="card bg-base-100 shadow-2xl">
     <div class="card-body">
-      <h2 class="card-title text-2xl text-primary">ATS Feedback</h2>
+      <h2 class="card-title text-2xl text-primary mb-4">ATS Feedback</h2>
 
       <div class="divider"></div>
 
-      <div class="prose max-w-none">
-        <pre class="whitespace-pre-wrap text-base leading-8">
+      <div class="bg-base-200 rounded-xl p-6">
+        <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
 
 {{ analysis }}
 

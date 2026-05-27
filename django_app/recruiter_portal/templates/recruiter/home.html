@@ -1,0 +1,58 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="hero bg-base-100 rounded-3xl shadow-2xl">
+  <div class="hero-content flex-col lg:flex-row-reverse gap-16 py-16">
+    <div>
+      <h1 class="text-6xl font-extrabold text-primary">
+        Recruit Smarter with AI
+      </h1>
+
+      <p class="py-6 text-lg leading-8 text-gray-600">
+        HireIQ helps recruiters automate resume screening, ATS analysis,
+        candidate ranking, and interview preparation using advanced AI
+        technologies.
+      </p>
+
+      <a href="/recruiter/dashboard/" class="btn btn-primary btn-lg">
+        Open Recruiter Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-primary">📄 Resume Screening</h2>
+
+      <p>
+        Upload multiple resumes and automatically rank candidates based on ATS
+        compatibility.
+      </p>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-primary">🤖 AI ATS Feedback</h2>
+
+      <p>
+        Get AI-generated strengths, weaknesses, missing skills, and hiring
+        recommendations.
+      </p>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title text-primary">🎯 Interview Assistant</h2>
+
+      <p>
+        Generate intelligent technical and HR interview questions instantly from
+        job descriptions.
+      </p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
