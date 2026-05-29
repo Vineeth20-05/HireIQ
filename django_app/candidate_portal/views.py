@@ -53,12 +53,23 @@ def candidate_dashboard(request):
                 "role":request.user.role
             })
 
-            feedback_response = requests.post("http://127.0.0.1:8001/candidate-feedback", json={
-                "candidate_name": request.user.username,
-                "resume_text": extracted_text,
-                "jd_text": jd_text
-            })
-            feedback = feedback_response.json()["feedback"]
+            feedback_response = requests.post("http://127.0.0.1:8001/candidate-feedback",
+            json={
+                    "candidate_name": request.user.username,
+                    "resume_text": extracted_text,
+                    "jd_text": jd_text,
+                    "user_id": str(request.user.id),
+                    "role": request.user.role
+                }
+            )
+            if feedback_response.status_code == 200:
+                feedback = feedback_response.json().get(
+                    "feedback",
+                    "No feedback generated."
+                )
+            else:
+                print("Feedback Error:", feedback_response.text)
+                feedback = "Unable to generate ATS feedback."
 
             interview_response = requests.get("http://127.0.0.1:8001/interview", params={
                 "candidate_name": request.user.username,

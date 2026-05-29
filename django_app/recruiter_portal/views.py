@@ -29,8 +29,10 @@ def recruiter_dashboard(request):
     if request.method == "POST" and form.is_valid():
         resumes = request.FILES.getlist("resumes")
         jd_text = form.cleaned_data["jd_text"]
+        shortlist_count = int(form.cleaned_data["shortlist_count"])
         
-        CandidateResume.objects.all().delete()
+        CandidateResume.objects.filter(uploaded_by =request.user).delete()
+        requests.delete("http://127.0.0.1:8001/clear-user",params={"user_id": str(request.user.id)})
 
         for resume_file in resumes:
             candidate_name = resume_file.name.split(".")[0]
@@ -55,8 +57,11 @@ def recruiter_dashboard(request):
                 "role":request.user.role
             })
 
-        ranking_response = requests.get("http://127.0.0.1:8001/rank", params={"jd": jd_text})
-        rankings = ranking_response.json().get("rankings")
+        ranking_response = ranking_response = requests.get("http://127.0.0.1:8001/rank", params={"jd": jd_text, "user_id": str(request.user.id), "limit": shortlist_count})
+        rankings = ranking_response.json().get("rankings",[])
+        uploaded_count = len(resumes)
+        shortlist_count = min(shortlist_count,uploaded_count)
+        rankings = rankings[:shortlist_count]
 
         for candidate in rankings:
             resume = CandidateResume.objects.filter(candidate_name__icontains=candidate["candidate_name"]).last()

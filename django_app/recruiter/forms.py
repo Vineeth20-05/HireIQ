@@ -19,8 +19,20 @@ class ResumeUploadForm(forms.Form):
         widget=MultipleFileInput(attrs={"multiple":True})
     )
     jd_text=forms.CharField(
-        widget=forms.Textarea
+        widget=forms.Textarea(attrs={
+            "placeholder":"Paste Job Description Here"
+        })
     )
+    
+    shortlist_count = forms.IntegerField(
+    label="Candidates to Shortlist",initial=5,min_value=1,
+    widget=forms.NumberInput(
+        attrs={
+            "class":"input input-bordered w-full",
+            "placeholder":"Enter number"
+        }
+    )
+)
     
     def __init__(self,*args,**kwargs):
             super().__init__(*args,**kwargs)

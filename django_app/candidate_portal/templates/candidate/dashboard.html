@@ -1,115 +1,97 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="flex justify-between items-center mb-8">
-  <div>
-    <h1 class="text-4xl font-bold">Candidate Dashboard</h1>
-
-    <p class="text-gray-500 mt-2">
-      Optimize your resume and prepare for interviews using AI
+<div class="max-w-6xl mx-auto">
+  <div class="mb-10">
+    <h1 class="text-5xl font-black">Career Workspace</h1>
+    <p class="text-gray-500 mt-3 text-lg">
+      Review your resume, understand role requirements, and prepare for future
+      career opportunities.
     </p>
   </div>
-</div>
 
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-  <div class="card bg-primary text-primary-content shadow-xl">
-    <div class="card-body">
-      <h2 class="text-lg">Resume Upload</h2>
-
-      <p class="text-3xl font-bold">Active</p>
+  <div class="alert shadow-lg mb-10">
+    <div>
+      <h3 class="font-bold text-lg">Resume Review & Interview Preparation</h3>
+      <p>
+        Upload your resume and compare it against a target role to receive
+        structured feedback and interview preparation materials.
+      </p>
     </div>
   </div>
 
-  <div class="card bg-success text-success-content shadow-xl">
+  <div class="card bg-base-100 shadow-2xl mb-10">
     <div class="card-body">
-      <h2 class="text-lg">ATS Analysis</h2>
+      <h2 class="card-title text-3xl">Resume Review</h2>
+      <p class="text-gray-500">
+        Upload your resume and a job description to evaluate profile alignment
+        and identify improvement opportunities.
+      </p>
 
-      <p class="text-3xl font-bold">Ready</p>
+      <form method="POST" enctype="multipart/form-data" class="space-y-6 mt-6">
+        {% csrf_token %}
+
+        <div>
+          <label class="label">
+            <span class="label-text text-lg">Resume</span>
+          </label>
+          {{ form.resume }}
+        </div>
+
+        <div>
+          <label class="label">
+            <span class="label-text text-lg">Job Description</span>
+          </label>
+          {{ form.jd_text }}
+        </div>
+
+        <button class="btn btn-primary btn-lg">Analyze Resume</button>
+      </form>
     </div>
   </div>
 
-  <div class="card bg-warning text-warning-content shadow-xl">
+  {% if feedback %}
+  <div class="card bg-base-100 shadow-2xl mb-10">
     <div class="card-body">
-      <h2 class="text-lg">Interview Prep</h2>
+      <h2 class="card-title text-3xl text-primary">Resume Evaluation Report</h2>
+      <p class="text-gray-500">
+        Insights and recommendations generated from your resume and target role
+        requirements.
+      </p>
 
-      <p class="text-3xl font-bold">AI</p>
-    </div>
-  </div>
+      <div class="divider"></div>
 
-  <div class="card bg-secondary text-secondary-content shadow-xl">
-    <div class="card-body">
-      <h2 class="text-lg">Career Assistant</h2>
-
-      <p class="text-3xl font-bold">Online</p>
-    </div>
-  </div>
-</div>
-
-<div class="card bg-base-100 shadow-xl mb-10">
-  <div class="card-body">
-    <h2 class="card-title text-2xl">Upload Resume</h2>
-
-    <form method="POST" enctype="multipart/form-data" class="space-y-6 mt-4">
-      {% csrf_token %}
-
-      <div>
-        <label class="label">
-          <span class="label-text text-lg"> Resume </span>
-        </label>
-
-        {{ form.resume }}
-      </div>
-
-      <div>
-        <label class="label">
-          <span class="label-text text-lg"> Job Description </span>
-        </label>
-
-        {{ form.jd_text }}
-      </div>
-
-      <button class="btn btn-primary btn-wide">Analyze Resume</button>
-    </form>
-  </div>
-</div>
-
-{% if feedback %}
-
-<div class="card bg-base-100 shadow-2xl mb-10">
-  <div class="card-body">
-    <h2 class="card-title text-2xl text-primary mb-4">ATS Feedback</h2>
-
-    <div class="divider"></div>
-
-    <div class="bg-base-200 rounded-xl p-6">
-      <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
-
+      <div class="bg-base-200 rounded-2xl p-8 border border-base-300">
+        <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
 {{ feedback }}
-
-            </pre
-      >
+                </pre
+        >
+      </div>
     </div>
   </div>
-</div>
+  {% endif %} {% if interview_questions %}
+  <div class="card bg-base-100 shadow-2xl">
+    <div class="card-body">
+      <h2 class="card-title text-3xl text-secondary">
+        Interview Readiness Guide
+      </h2>
+      <p class="text-gray-500">
+        Role-specific interview questions prepared to support your interview
+        preparation.
+      </p>
 
-{% endif %} {% if interview_questions %}
+      <div class="divider"></div>
 
-<div class="card bg-base-100 shadow-2xl">
-  <div class="card-body">
-    <h2 class="card-title text-2xl text-secondary mb-4">
-      AI Interview Questions
-    </h2>
-
-    <div class="divider"></div>
-
-    <div class="bg-base-200 rounded-xl p-6 max-h-[700px] overflow-y-auto">
-      <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
-
+      <div
+        class="bg-base-200 rounded-2xl p-8 border border-base-300 max-h-[700px] overflow-y-auto"
+      >
+        <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
 {{ interview_questions }}
-
-            </pre
-      >
+                </pre
+        >
+      </div>
     </div>
   </div>
+  {% endif %}
 </div>
 
-{% endif %} {% endblock %}
+{% endblock %}

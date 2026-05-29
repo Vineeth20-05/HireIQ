@@ -1,186 +1,153 @@
 {% load static tailwind_tags %}
 
 <!doctype html>
-
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HireIQ</title>
-
     {% tailwind_css %}
-  </head>
+</head>
 
-  <body class="bg-base-200 min-h-screen">
+<body class="bg-base-200 min-h-screen">
     <div class="drawer lg:drawer-open">
-      <input id="sidebar" type="checkbox" class="drawer-toggle" />
+        <input id="sidebar" type="checkbox" class="drawer-toggle">
 
-      <div class="drawer-content flex flex-col">
-        <div class="navbar bg-base-100 shadow-md px-6">
-          <div class="flex-none lg:hidden">
-            <label for="sidebar" class="btn btn-square btn-ghost"> ☰ </label>
-          </div>
+        <!-- Main Content -->
+        <div class="drawer-content flex flex-col">
+            <!-- Mobile Navbar -->
+
+<div
+    class="
+    navbar
+    bg-base-100
+    border-b
+    border-base-300
+    shadow-sm
+    px-6
+    lg:hidden
+    "
+>
+
+    <div class="flex-none">
+
+        <label
+            for="sidebar"
+            class="btn btn-square btn-ghost"
+        >
+            ☰
+        </label>
+
+    </div>
+
+    <div class="flex-1">
+
+        <h2 class="text-lg font-bold">
+
+            {% if user.is_authenticated %}
+                {{ user.role|title }} Workspace
+            {% else %}
+                HireIQ
+            {% endif %}
+
+        </h2>
+
+    </div>
+
+    {% if user.is_authenticated %}
+
+    <div>
+
+        <span class="badge badge-success">
+            Online
+        </span>
+
+    </div>
+
+    {% endif %}
+
+</div>
+            <main class="p-8">
+                {% block content %}
+                {% endblock %}
+            </main>
         </div>
 
-        <main class="p-8">{% block content %} {% endblock %}</main>
-      </div>
+        <!-- Sidebar -->
+        <div class="drawer-side">
+            <label for="sidebar" class="drawer-overlay"></label>
+            <aside class="bg-base-100 w-72 min-h-full border-r border-base-300 flex flex-col">
+                <!-- Brand -->
+                <div class="p-8 bg-gradient-to-br from-primary to-secondary text-white">
+                    <h2 class="text-5xl font-black">HireIQ</h2>
+                    <p class="text-sm mt-2 opacity-90">Recruitment & Career Platform</p>
+                </div>
 
-      <div class="drawer-side">
-        <label for="sidebar" class="drawer-overlay"> </label>
+                <!-- User -->
+                {% if user.is_authenticated %}
+                <div class="p-6 border-b border-base-300">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-gradient-to-br from-primary to-secondary text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
+                            <span class="text-2xl font-bold">{{ user.username|first|upper }}</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg">{{ user.username }}</h3>
+                            <p class="text-xs uppercase tracking-widest text-gray-400">{{ user.role }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
 
-        <aside
-          class="bg-base-100 w-72 min-h-full shadow-2xl border-r border-base-300"
-        >
-          <div
-            class="p-6 border-b border-base-300 bg-primary text-primary-content"
-          >
-            <h2 class="text-4xl font-extrabold tracking-wide">HireIQ</h2>
+                <!-- Menu -->
+                <ul class="menu p-5 gap-2">
+                    <li class="menu-title"><span>OVERVIEW</span></li>
+                    <li>
+                        {% if user.is_authenticated %}
+                            {% if user.role == "recruiter" %}
+                                <a href="/recruiter/home/" class="rounded-xl hover:bg-primary hover:text-white transition-all duration-300">🏠 Home</a>
+                            {% elif user.role == "candidate" %}
+                                <a href="/candidate/home/" class="rounded-xl hover:bg-primary hover:text-white transition-all duration-300">🏠 Home</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="/" class="rounded-xl hover:bg-primary hover:text-white transition-all duration-300">🏠 Home</a>
+                        {% endif %}
+                    </li>
 
-            <p class="text-sm opacity-80 mt-2">AI Recruitment Platform</p>
-          </div>
+                    <li class="menu-title mt-4"><span>WORKSPACE</span></li>
 
-          {% if user.is_authenticated %}
+                    {% if user.is_authenticated and user.role == "recruiter" %}
+                        <li><a href="/recruiter/dashboard/" class="rounded-xl hover:bg-primary hover:text-white transition-all duration-300">📋 Candidate Screening</a></li>
+                        <li><a href="/recruiter/ai-assistant/" class="rounded-xl hover:bg-primary hover:text-white transition-all duration-300">🔍 Talent Search</a></li>
+                        <li><a href="/recruiter/interview-assistant/" class="rounded-xl hover:bg-primary hover:text-white transition-all duration-300">🎯 Interview Planning</a></li>
+                    {% endif %}
 
-          <div
-            class="px-6 py-5 border-b border-base-300 flex items-center gap-4"
-          >
-            <div class="avatar placeholder">
-              <div
-                class="bg-primary text-primary-content rounded-full w-14 flex items-center justify-center"
-              >
-                <span class="text-2xl font-bold">
-                  {{ user.username|first|upper }}
-                </span>
-              </div>
-            </div>
+                    {% if user.is_authenticated and user.role == "candidate" %}
+                        <li><a href="/candidate/dashboard/" class="rounded-xl hover:bg-primary hover:text-white transition-all duration-300">📈 Career Workspace</a></li>
+                    {% endif %}
 
-            <div>
-              <h3 class="font-bold text-lg">{{ user.username }}</h3>
+                    {% if not user.is_authenticated %}
+                        <li><a href="/accounts/login/" class="rounded-xl hover:bg-primary hover:text-white transition-all duration-300">Sign In</a></li>
+                        <li><a href="/accounts/register/" class="rounded-xl hover:bg-primary hover:text-white transition-all duration-300">Create Account</a></li>
+                    {% endif %}
 
-              <p class="text-sm text-gray-500">{{ user.role|title }}</p>
-            </div>
-          </div>
+                    {% if user.is_authenticated %}
+                        <li class="menu-title mt-4"><span>ACCOUNT</span></li>
+                        <li>
+                            <a href="/accounts/logout/" class="rounded-xl bg-error text-white justify-center text-center font-semibold hover:opacity-90">Logout</a>
+                        </li>
+                    {% endif %}
+                </ul>
 
-          {% endif %}
-
-          <ul class="menu p-5 text-base-content text-lg gap-3">
-            <li>
-              {% if user.is_authenticated %} {% if user.role == "recruiter" %}
-
-              <a
-                href="/recruiter/home/"
-                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
-              >
-                🏠 Home
-              </a>
-
-              {% elif user.role == "candidate" %}
-
-              <a
-                href="/candidate/home/"
-                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
-              >
-                🏠 Home
-              </a>
-
-              {% else %}
-
-              <a
-                href="/"
-                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
-              >
-                🏠 Home
-              </a>
-
-              {% endif %} {% else %}
-
-              <a
-                href="/"
-                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
-              >
-                🏠 Home
-              </a>
-
-              {% endif %}
-            </li>
-
-            {% if user.is_authenticated %} {% if user.role == "recruiter" %}
-
-            <li>
-              <a
-                href="/recruiter/dashboard/"
-                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
-              >
-                📊 Recruiter Dashboard
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="/recruiter/ai-assistant/"
-                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
-              >
-                🧠 AI Hiring Assistant
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="/recruiter/interview-assistant/"
-                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
-              >
-                🤖 Interview Assistant
-              </a>
-            </li>
-
-            {% elif user.role == "candidate" %}
-
-            <li>
-              <a
-                href="/candidate/dashboard/"
-                class="rounded-xl hover:bg-primary hover:text-white transition-all duration-200"
-              >
-                👨‍💻 Candidate Dashboard
-              </a>
-            </li>
-
-            {% endif %}
-
-            <li class="mt-6">
-              <a
-                href="/accounts/logout/"
-                class="rounded-xl bg-error text-white hover:opacity-90 transition-all duration-200"
-              >
-                🚪 Logout
-              </a>
-            </li>
-
-            {% else %}
-
-            <li>
-              <a
-                href="/accounts/login/"
-                class="rounded-xl border border-base-300 hover:bg-primary hover:text-white hover:border-primary transition-all duration-200"
-              >
-                🔐 Login
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="/accounts/register/"
-                class="rounded-xl border border-base-300 hover:bg-primary hover:text-white hover:border-primary transition-all duration-200"
-              >
-                ✨ Register
-              </a>
-            </li>
-
-            {% endif %}
-          </ul>
-        </aside>
-      </div>
+                <!-- Footer -->
+                <div class="mt-auto p-5">
+                    <div class="rounded-xl bg-base-200 p-4 text-center">
+                        <h4 class="font-bold">HireIQ</h4>
+                        <p class="text-xs text-gray-500">Recruitment & Career Platform</p>
+                        <p class="text-xs text-gray-400 mt-2">Version 1.0</p>
+                    </div>
+                </div>
+            </aside>
+        </div>
     </div>
-  </body>
+</body>
 </html>

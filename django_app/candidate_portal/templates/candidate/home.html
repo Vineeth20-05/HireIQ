@@ -1,57 +1,130 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="hero bg-base-100 rounded-3xl shadow-2xl">
-  <div class="hero-content flex-col lg:flex-row gap-16 py-16">
-    <div>
-      <h1 class="text-6xl font-extrabold text-secondary">
-        Build a Stronger Resume with AI
+<div
+  class="hero rounded-3xl bg-gradient-to-r from-secondary to-primary text-primary-content shadow-2xl"
+>
+  <div class="hero-content text-center py-20">
+    <div class="max-w-4xl">
+      <h1 class="text-6xl font-black leading-tight">
+        Welcome Back, {{ user.username }}
       </h1>
-
-      <p class="py-6 text-lg leading-8 text-gray-600">
-        Optimize your resume, improve ATS score, prepare for interviews, and
-        enhance your career profile using HireIQ AI tools.
+      <p class="text-xl mt-6 max-w-3xl mx-auto">
+        Review your resume, prepare for interviews, and strengthen your profile
+        for future opportunities.
       </p>
-
-      <a href="/candidate/dashboard/" class="btn btn-secondary btn-lg">
-        Open Candidate Dashboard
-      </a>
+      <div class="flex justify-center gap-5 mt-10 flex-wrap">
+        <a
+          href="/candidate/dashboard/"
+          class="btn btn-lg bg-white text-secondary border-none hover:scale-105 transition-all duration-300"
+        >
+          Open Career Workspace
+        </a>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title text-secondary">📄 ATS Resume Analysis</h2>
+<div class="mt-20">
+  <div class="text-center mb-12">
+    <h2 class="text-5xl font-bold">How HireIQ Supports Your Career Journey</h2>
+    <p class="text-gray-500 mt-4 max-w-2xl mx-auto">
+      A structured workflow designed to help professionals improve resumes,
+      prepare for interviews, and understand hiring expectations.
+    </p>
+  </div>
 
-      <p>
-        Upload your resume and receive intelligent ATS feedback to improve your
-        chances of selection.
+  <div class="grid md:grid-cols-3 gap-8">
+    <div
+      class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300"
+    >
+      <div class="card-body">
+        <div class="text-5xl">📄</div>
+        <h2 class="card-title text-2xl">Resume Review</h2>
+        <p>
+          Evaluate your resume against job requirements and identify
+          opportunities for improvement.
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300"
+    >
+      <div class="card-body">
+        <div class="text-5xl">📈</div>
+        <h2 class="card-title text-2xl">Profile Improvement</h2>
+        <p>
+          Discover skills, keywords, and experiences that can strengthen your
+          professional profile.
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300"
+    >
+      <div class="card-body">
+        <div class="text-5xl">🎤</div>
+        <h2 class="card-title text-2xl">Interview Readiness</h2>
+        <p>
+          Prepare for technical and behavioral interviews with role-specific
+          question guides.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% comment %} <div class="mt-20 grid md:grid-cols-4 gap-6">
+  <div class="card bg-base-100 shadow-lg">
+    <div class="card-body text-center">
+      <h3 class="font-bold text-lg">Resume Review</h3>
+      <p class="text-sm text-gray-500">
+        Understand profile strengths and gaps.
       </p>
     </div>
   </div>
 
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title text-secondary">💡 Skill Suggestions</h2>
+  <div class="card bg-base-100 shadow-lg">
+    <div class="card-body text-center">
+      <h3 class="font-bold text-lg">Career Preparation</h3>
+      <p class="text-sm text-gray-500">Prepare for upcoming opportunities.</p>
+    </div>
+  </div>
 
-      <p>
-        Discover missing skills, keywords, and recommendations tailored to job
-        descriptions.
+  <div class="card bg-base-100 shadow-lg">
+    <div class="card-body text-center">
+      <h3 class="font-bold text-lg">Interview Readiness</h3>
+      <p class="text-sm text-gray-500">
+        Practice role-specific interview questions.
       </p>
     </div>
   </div>
 
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title text-secondary">🎤 Interview Preparation</h2>
-
-      <p>
-        Practice AI-generated technical and HR interview questions based on your
-        resume and target role.
+  <div class="card bg-base-100 shadow-lg">
+    <div class="card-body text-center">
+      <h3 class="font-bold text-lg">Profile Development</h3>
+      <p class="text-sm text-gray-500">
+        Build a stronger professional profile.
       </p>
     </div>
   </div>
+</div> {% endcomment %}
+
+<div
+  class="mt-20 rounded-3xl bg-secondary text-secondary-content p-12 text-center shadow-2xl"
+>
+  <h2 class="text-4xl font-black">Ready to Strengthen Your Profile?</h2>
+  <p class="mt-4 max-w-2xl mx-auto">
+    Review your resume, understand hiring expectations, and prepare for future
+    career opportunities.
+  </p>
+  <a
+    href="/candidate/dashboard/"
+    class="btn btn-lg bg-white text-secondary mt-6 border-none"
+  >
+    Open Career Workspace
+  </a>
 </div>
 
 {% endblock %}

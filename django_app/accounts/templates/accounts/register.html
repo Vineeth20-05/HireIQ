@@ -1,82 +1,129 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="flex justify-center items-center min-h-[80vh]">
-  <div class="card w-full max-w-lg bg-base-100 shadow-2xl">
-    <div class="card-body">
-      <h1 class="text-3xl font-bold text-center text-primary">
-        Create Account
+<div class="min-h-[85vh] flex items-center justify-center">
+  <div class="grid lg:grid-cols-2 gap-16 items-center w-full max-w-7xl">
+    <!-- Left Side -->
+    <div class="hidden lg:block">
+      <h1 class="text-6xl font-black leading-tight">
+        Start Your Journey With HireIQ
       </h1>
-
-      <p class="text-center text-gray-500">
-        Join HireIQ AI Recruitment Platform
+      <p class="text-xl text-gray-500 mt-6 max-w-xl">
+        Create an account to access recruitment tools, candidate evaluation
+        workflows, resume reviews, and interview preparation resources.
       </p>
-      {% if form.errors %}
 
-      <div class="alert alert-error mt-4">
-        <ul>
-          {% for field in form %} {% for error in field.errors %}
+      <div class="mt-10 space-y-6">
+        <div class="flex items-center gap-4">
+          <div class="text-3xl">📋</div>
+          <div>
+            <h3 class="font-bold text-lg">Candidate Evaluation</h3>
+            <p class="text-gray-500">
+              Review qualifications and compare applicants efficiently.
+            </p>
+          </div>
+        </div>
 
-          <li><strong>{{ field.label }}</strong> : {{ error }}</li>
+        <div class="flex items-center gap-4">
+          <div class="text-3xl">🎯</div>
+          <div>
+            <h3 class="font-bold text-lg">Interview Planning</h3>
+            <p class="text-gray-500">
+              Prepare structured interviews and assessments.
+            </p>
+          </div>
+        </div>
 
-          {% endfor %} {% endfor %}
-        </ul>
+        <div class="flex items-center gap-4">
+          <div class="text-3xl">📈</div>
+          <div>
+            <h3 class="font-bold text-lg">Career Development</h3>
+            <p class="text-gray-500">
+              Strengthen resumes and improve career readiness.
+            </p>
+          </div>
+        </div>
       </div>
+    </div>
 
-      {% endif %}
+    <!-- Registration Card -->
+    <div class="flex justify-center">
+      <div class="card w-full max-w-md bg-base-100 shadow-2xl">
+        <div class="card-body p-10">
+          <div class="text-center mb-6">
+            <h1 class="text-4xl font-black text-primary">Create Account</h1>
+            <p class="text-gray-500 mt-2">Sign up to access your workspace</p>
+          </div>
 
-      <form method="POST" class="space-y-4 mt-6">
-        {% csrf_token %}
+          {% if form.errors %}
+          <div class="alert alert-error mb-6">
+            <span>There were errors with your submission</span>
+          </div>
+          {% endif %}
 
-        <div>
-          <label class="label">
-            <span class="label-text"> Username </span>
-          </label>
+          <form method="POST" class="space-y-5">
+            {% csrf_token %}
 
-          {{ form.username }}
+            <div>
+              <label class="label">
+                <span class="label-text">Username</span>
+              </label>
+              <input
+                type="text"
+                name="username"
+                class="input input-bordered w-full"
+                placeholder="Enter username"
+              />
+            </div>
+
+            <div>
+              <label class="label">
+                <span class="label-text">Email</span>
+              </label>
+              <input
+                type="email"
+                name="email"
+                class="input input-bordered w-full"
+                placeholder="Enter email"
+              />
+            </div>
+
+            <div>
+              <label class="label">
+                <span class="label-text">Password</span>
+              </label>
+              <input
+                type="password"
+                name="password1"
+                class="input input-bordered w-full"
+                placeholder="Enter password"
+              />
+            </div>
+
+            <div>
+              <label class="label">
+                <span class="label-text">Confirm Password</span>
+              </label>
+              <input
+                type="password"
+                name="password2"
+                class="input input-bordered w-full"
+                placeholder="Confirm password"
+              />
+            </div>
+
+            <button class="btn btn-primary w-full btn-lg">Sign Up</button>
+          </form>
+
+          <div class="divider">OR</div>
+
+          <p class="text-center">
+            Already have an account?
+            <a href="/accounts/login/" class="text-primary font-semibold"
+              >Sign In</a
+            >
+          </p>
         </div>
-
-        <div>
-          <label class="label">
-            <span class="label-text"> Email </span>
-          </label>
-
-          {{ form.email }}
-        </div>
-
-        <div>
-          <label class="label">
-            <span class="label-text"> Role </span>
-          </label>
-
-          {{ form.role }}
-        </div>
-
-        <div>
-          <label class="label">
-            <span class="label-text"> Password </span>
-          </label>
-
-          {{ form.password1 }}
-        </div>
-
-        <div>
-          <label class="label">
-            <span class="label-text"> Confirm Password </span>
-          </label>
-
-          {{ form.password2 }}
-        </div>
-
-        <button class="btn btn-primary w-full">Register</button>
-      </form>
-
-      <p class="text-center mt-4">
-        Already have an account?
-
-        <a href="/accounts/login/" class="text-primary font-semibold">
-          Login
-        </a>
-      </p>
+      </div>
     </div>
   </div>
 </div>

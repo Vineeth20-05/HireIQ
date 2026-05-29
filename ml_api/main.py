@@ -72,9 +72,9 @@ def rag_query(query: str, user_id: str):
 
 
 @app.get("/rank")
-def rank_candidates(jd:str):
-    results=vector_store.similarity_search_with_score(jd,k=5)
-
+def rank_candidates(jd:str,user_id: str,limit: int = 5):
+    limit = max(1, min(limit, 100))
+    results = vector_store.similarity_search_with_score(jd, k=limit, filter={"user_id": user_id})
     ranked_candidates=[]
 
     for doc,score in results:
@@ -292,7 +292,22 @@ def clear_vector_db():
         "message":"Vector DB reset successful"
     }
     
-    
+@app.delete("/clear-user")
+def clear_user_vectors(user_id: str):
+    results = vector_store.get(
+        where={
+            "user_id": user_id
+        }
+    )
+    if results["ids"]:
+        vector_store.delete(
+            ids=results["ids"]
+        )
+    return {
+        "message": "User vectors deleted"
+    }
+
+
 if __name__ == "__main__":
    uvicorn.run("main:app", host="127.0.0.1", port=8001)
 

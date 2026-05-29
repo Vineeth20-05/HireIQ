@@ -1,57 +1,104 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="flex justify-center items-center min-h-[80vh]">
-  <div class="card w-full max-w-md bg-base-100 shadow-2xl">
-    <div class="card-body">
-      <h1 class="text-3xl font-bold text-center text-primary">Welcome Back</h1>
-
-      <p class="text-center text-gray-500">Login to your HireIQ account</p>
-      {% if form.errors %}
-
-      <div class="alert alert-error mt-4">
-        <span> Invalid username or password </span>
-      </div>
-
-      {% endif %}
-      <form method="POST" class="space-y-4 mt-6">
-        {% csrf_token %}
-
-        <div>
-          <label class="label">
-            <span class="label-text"> Username </span>
-          </label>
-
-          <input
-            type="text"
-            name="username"
-            class="input input-bordered w-full"
-            placeholder="Enter username"
-          />
-        </div>
-
-        <div>
-          <label class="label">
-            <span class="label-text"> Password </span>
-          </label>
-
-          <input
-            type="password"
-            name="password"
-            class="input input-bordered w-full"
-            placeholder="Enter password"
-          />
-        </div>
-
-        <button class="btn btn-primary w-full">Login</button>
-      </form>
-
-      <p class="text-center mt-4">
-        Don’t have an account?
-
-        <a href="/accounts/register/" class="text-primary font-semibold">
-          Register
-        </a>
+<div class="min-h-[85vh] flex items-center justify-center">
+  <div class="grid lg:grid-cols-2 gap-16 items-center w-full max-w-7xl">
+    <!-- Left Side -->
+    <div class="hidden lg:block">
+      <h1 class="text-6xl font-black leading-tight">
+        Talent Intelligence Platform
+      </h1>
+      <p class="text-xl text-gray-500 mt-6 max-w-xl">
+        HireIQ helps organizations streamline candidate evaluation and supports
+        professionals in strengthening their career profiles.
       </p>
+
+      <div class="mt-10 space-y-6">
+        <div class="flex items-center gap-4">
+          <div class="text-3xl">📋</div>
+          <div>
+            <h3 class="font-bold text-lg">Candidate Evaluation</h3>
+            <p class="text-gray-500">
+              Review qualifications and compare applicants efficiently.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="text-3xl">🎯</div>
+          <div>
+            <h3 class="font-bold text-lg">Interview Planning</h3>
+            <p class="text-gray-500">
+              Prepare structured interviews and assessments.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="text-3xl">📈</div>
+          <div>
+            <h3 class="font-bold text-lg">Career Development</h3>
+            <p class="text-gray-500">
+              Strengthen resumes and improve career readiness.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Card -->
+    <div class="flex justify-center">
+      <div class="card w-full max-w-md bg-base-100 shadow-2xl">
+        <div class="card-body p-10">
+          <div class="text-center mb-6">
+            <h1 class="text-4xl font-black text-primary">Welcome Back</h1>
+            <p class="text-gray-500 mt-2">Sign in to access your workspace</p>
+          </div>
+
+          {% if form.errors %}
+          <div class="alert alert-error mb-6">
+            <span>Invalid username or password</span>
+          </div>
+          {% endif %}
+
+          <form method="POST" class="space-y-5">
+            {% csrf_token %}
+            <div>
+              <label class="label">
+                <span class="label-text">Username</span>
+              </label>
+              <input
+                type="text"
+                name="username"
+                class="input input-bordered w-full"
+                placeholder="Enter username"
+              />
+            </div>
+
+            <div>
+              <label class="label">
+                <span class="label-text">Password</span>
+              </label>
+              <input
+                type="password"
+                name="password"
+                class="input input-bordered w-full"
+                placeholder="Enter password"
+              />
+            </div>
+
+            <button class="btn btn-primary w-full btn-lg">Sign In</button>
+          </form>
+
+          <div class="divider">OR</div>
+
+          <p class="text-center">
+            Don't have an account?
+            <a href="/accounts/register/" class="text-primary font-semibold">
+              Create Account
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>

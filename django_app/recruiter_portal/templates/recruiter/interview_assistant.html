@@ -1,32 +1,69 @@
 {% extends 'base.html' %} {% block content %}
 
 <div class="max-w-6xl mx-auto">
-  <div class="flex justify-between items-center mb-8">
+  <div class="flex justify-between items-center mb-10">
     <div>
-      <h1 class="text-4xl font-bold">AI Interview Assistant</h1>
-
-      <p class="text-gray-500 mt-2">
-        Generate recruiter-focused interview questions using AI
+      <h1 class="text-5xl font-black">Interview Planning</h1>
+      <p class="text-gray-500 mt-3 text-lg">
+        Prepare structured interview questions based on role requirements and
+        candidate evaluation criteria.
       </p>
     </div>
 
-    <a href="/recruiter/dashboard/" class="btn btn-outline">
-      Back to Dashboard
-    </a>
+    {% comment %} <a
+      href="/recruiter/dashboard/"
+      class="btn btn-primary btn-lg font-bold shadow-md hover:scale-105 transition-transform"
+    >
+      ⬅ Screening
+    </a> {% endcomment %}
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-8 mb-10">
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="text-5xl">📋</div>
+        <h2 class="card-title">Role Assessment</h2>
+        <p>
+          Generate interview topics based on role requirements and expected
+          qualifications.
+        </p>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="text-5xl">🎯</div>
+        <h2 class="card-title">Candidate Evaluation</h2>
+        <p>
+          Prepare structured questions to assess technical and professional
+          competencies.
+        </p>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="text-5xl">💬</div>
+        <h2 class="card-title">Interview Preparation</h2>
+        <p>Create discussion points for consistent candidate evaluation.</p>
+      </div>
+    </div>
   </div>
 
   <div class="card bg-base-100 shadow-2xl">
     <div class="card-body">
-      <h2 class="card-title text-2xl">Generate Interview Questions</h2>
+      <h2 class="card-title text-3xl">Interview Question Generator</h2>
+      <p class="text-gray-500">
+        Enter a job description to generate interview questions tailored to the
+        position.
+      </p>
 
-      <form method="POST" class="space-y-6 mt-4">
+      <form method="POST" class="space-y-6 mt-6">
         {% csrf_token %}
-
         <div>
           <label class="label">
-            <span class="label-text text-lg"> Job Description </span>
+            <span class="label-text text-lg">Job Description</span>
           </label>
-
           <textarea
             name="jd_text"
             class="textarea textarea-bordered w-full h-52"
@@ -34,28 +71,31 @@
           ></textarea>
         </div>
 
-        <button class="btn btn-primary btn-wide">Generate Questions</button>
+        <button class="btn btn-primary btn-lg">
+          Generate Interview Questions
+        </button>
       </form>
     </div>
   </div>
 
   {% if interview_questions %}
-
   <div class="card bg-base-100 shadow-2xl mt-10">
     <div class="card-body">
-      <h2 class="card-title text-2xl text-primary">AI Generated Questions</h2>
+      <h2 class="card-title text-3xl text-primary">Interview Question Guide</h2>
+      <p class="text-gray-500">
+        Structured questions prepared for candidate evaluation.
+      </p>
 
       <div class="divider"></div>
 
-      <pre class="whitespace-pre-wrap text-base leading-8">
-
+      <div class="bg-base-200 rounded-2xl p-8 border border-base-300">
+        <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
 {{ interview_questions }}
-
-            </pre
-      >
+                </pre
+        >
+      </div>
     </div>
   </div>
-
   {% endif %}
 </div>
 

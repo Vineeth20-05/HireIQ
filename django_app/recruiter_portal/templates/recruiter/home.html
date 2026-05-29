@@ -1,58 +1,139 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="hero bg-base-100 rounded-3xl shadow-2xl">
-  <div class="hero-content flex-col lg:flex-row-reverse gap-16 py-16">
-    <div>
-      <h1 class="text-6xl font-extrabold text-primary">
-        Recruit Smarter with AI
+<div
+  class="hero rounded-3xl bg-gradient-to-r from-primary to-secondary text-primary-content shadow-2xl"
+>
+  <div class="hero-content text-center py-20">
+    <div class="max-w-4xl">
+      <h1 class="text-6xl font-black leading-tight">
+        Welcome Back, {{ user.username }}
       </h1>
 
-      <p class="py-6 text-lg leading-8 text-gray-600">
-        HireIQ helps recruiters automate resume screening, ATS analysis,
-        candidate ranking, and interview preparation using advanced AI
-        technologies.
+      <p class="text-xl mt-6 max-w-3xl mx-auto">
+        Manage candidate evaluations, streamline hiring decisions, and identify
+        qualified talent from a centralized recruitment workspace.
       </p>
 
-      <a href="/recruiter/dashboard/" class="btn btn-primary btn-lg">
-        Open Recruiter Dashboard
-      </a>
+      <div class="flex justify-center gap-5 mt-10 flex-wrap">
+        <a
+          href="/recruiter/dashboard/"
+          class="btn btn-lg bg-white text-primary border-none hover:scale-105 transition-all"
+        >
+          Open Screening Workspace
+        </a>
+
+        <a
+          href="/recruiter/ai-assistant/"
+          class="btn btn-lg btn-outline border-white text-white"
+        >
+          Open Talent Search
+        </a>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+{% comment %} <div class="grid md:grid-cols-4 gap-6 mt-12">
   <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title text-primary">📄 Resume Screening</h2>
+    <div class="card-body text-center">
+      <h2 class="text-2xl font-bold text-primary">Candidate Screening</h2>
 
-      <p>
-        Upload multiple resumes and automatically rank candidates based on ATS
-        compatibility.
-      </p>
+      <p>Review applicant qualifications against role requirements.</p>
     </div>
   </div>
 
   <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title text-primary">🤖 AI ATS Feedback</h2>
+    <div class="card-body text-center">
+      <h2 class="text-2xl font-bold text-primary">Talent Discovery</h2>
 
-      <p>
-        Get AI-generated strengths, weaknesses, missing skills, and hiring
-        recommendations.
-      </p>
+      <p>Identify qualified candidates for open opportunities.</p>
     </div>
   </div>
 
   <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title text-primary">🎯 Interview Assistant</h2>
+    <div class="card-body text-center">
+      <h2 class="text-2xl font-bold text-primary">Hiring Insights</h2>
 
-      <p>
-        Generate intelligent technical and HR interview questions instantly from
-        job descriptions.
-      </p>
+      <p>Support recruitment decisions with structured evaluations.</p>
     </div>
   </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body text-center">
+      <h2 class="text-2xl font-bold text-primary">Interview Planning</h2>
+
+      <p>Prepare interview discussions and assessment criteria.</p>
+    </div>
+  </div>
+</div> {% endcomment %}
+
+<div class="mt-16">
+  <h2 class="text-4xl font-bold text-center mb-10">Recruitment Workspace</h2>
+
+  <div class="grid md:grid-cols-3 gap-8">
+    <div
+      class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300"
+    >
+      <div class="card-body">
+        <div class="text-5xl">📋</div>
+
+        <h2 class="card-title">Candidate Screening</h2>
+
+        <p>
+          Upload resumes, compare qualifications, and shortlist candidates based
+          on job requirements.
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300"
+    >
+      <div class="card-body">
+        <div class="text-5xl">🔍</div>
+
+        <h2 class="card-title">Talent Search</h2>
+
+        <p>
+          Explore candidate profiles and identify individuals who align with
+          hiring objectives.
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300"
+    >
+      <div class="card-body">
+        <div class="text-5xl">🎯</div>
+
+        <h2 class="card-title">Interview Planning</h2>
+
+        <p>
+          Generate structured interview preparation materials for shortlisted
+          applicants.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="mt-20 rounded-3xl bg-primary text-primary-content p-12 text-center shadow-2xl"
+>
+  <h2 class="text-4xl font-black">Ready to Review Candidates?</h2>
+
+  <p class="mt-4 max-w-2xl mx-auto">
+    Start evaluating applicants, identifying qualified talent, and supporting
+    hiring decisions through a unified workflow.
+  </p>
+
+  <a
+    href="/recruiter/dashboard/"
+    class="btn btn-lg bg-white text-primary mt-6 border-none"
+  >
+    Open Screening Workspace
+  </a>
 </div>
 
 {% endblock %}

@@ -1,31 +1,57 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="max-w-5xl mx-auto">
-  <div class="flex justify-between items-center mb-8">
+<div class="max-w-6xl mx-auto">
+  <div class="flex justify-between items-center mb-10">
     <div>
-      <h1 class="text-4xl font-bold">{{ candidate_name }}</h1>
-
-      <p class="text-gray-500 mt-2">
-        AI-generated ATS and resume intelligence report
+      <h1 class="text-5xl font-black">{{ candidate_name }}</h1>
+      <p class="text-gray-500 mt-3 text-lg">
+        Candidate evaluation report and recruitment assessment.
       </p>
     </div>
 
-    <a href="/recruiter/dashboard/" class="btn btn-outline">
-      Back to Dashboard
+    <a href="/recruiter/dashboard/" class="btn btn-outline btn-lg">
+      ⬅ Back to Screening
     </a>
+  </div>
+
+  <div class="stats shadow w-full mb-10">
+    <div class="stat">
+      <div class="stat-figure text-primary text-4xl">📄</div>
+      <div class="stat-title">Profile Review</div>
+      <div class="stat-value text-primary">Complete</div>
+      <div class="stat-desc">Candidate qualification assessment</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-figure text-success text-4xl">🎯</div>
+      <div class="stat-title">Evaluation Status</div>
+      <div class="stat-value text-success">Reviewed</div>
+      <div class="stat-desc">Recruitment recommendation available</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-figure text-warning text-4xl">📊</div>
+      <div class="stat-title">Assessment</div>
+      <div class="stat-value text-warning">Ready</div>
+      <div class="stat-desc">Candidate insights generated</div>
+    </div>
   </div>
 
   <div class="card bg-base-100 shadow-2xl">
     <div class="card-body">
-      <h2 class="card-title text-2xl text-primary mb-4">ATS Feedback</h2>
+      <h2 class="card-title text-3xl text-primary">
+        Candidate Evaluation Report
+      </h2>
+      <p class="text-gray-500">
+        Detailed assessment of candidate qualifications, strengths, and role
+        alignment.
+      </p>
 
       <div class="divider"></div>
 
-      <div class="bg-base-200 rounded-xl p-6">
+      <div class="bg-base-200 rounded-2xl p-8 border border-base-300">
         <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
-
 {{ analysis }}
-
                 </pre
         >
       </div>

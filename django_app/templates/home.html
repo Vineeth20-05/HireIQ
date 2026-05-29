@@ -1,62 +1,164 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="hero min-h-[80vh] bg-base-200 rounded-3xl">
+<div
+  class="hero min-h-[85vh] rounded-3xl bg-gradient-to-r from-primary to-secondary text-primary-content shadow-2xl"
+>
   <div class="hero-content text-center">
-    <div class="max-w-3xl">
-      <h1 class="text-6xl font-bold leading-tight">
-        AI-Powered Recruitment Intelligence Platform
+    <div class="max-w-5xl">
+      <h1 class="text-6xl md:text-7xl font-black leading-tight">
+        Hire Smarter.
+
+        <br />
+
+        Build Stronger Teams.
       </h1>
 
-      <p class="py-8 text-lg text-gray-500">
-        HireIQ helps recruiters and candidates leverage AI for smarter hiring,
-        resume analysis, ATS optimization, semantic candidate ranking, and
-        interview preparation.
+      <p class="py-8 text-xl max-w-3xl mx-auto text-base-100">
+        A modern talent platform designed to help organizations identify
+        qualified candidates and support professionals throughout their career
+        journey.
       </p>
 
-      <div class="flex justify-center gap-4">
-        <a href="/accounts/register/" class="btn btn-primary btn-lg">
-          Get Started
+      <div class="flex justify-center gap-5 flex-wrap">
+        <a
+          href="/accounts/register/"
+          class="btn btn-lg bg-white text-primary border-none hover:scale-105 transition-all duration-300"
+        >
+          Create Account
         </a>
 
-        <a href="/accounts/login/" class="btn btn-outline btn-lg"> Login </a>
+        <a
+          href="/accounts/login/"
+          class="btn btn-lg btn-outline border-white text-white hover:bg-white hover:text-primary"
+        >
+          Sign In
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% comment %} 
+<div class="grid md:grid-cols-4 gap-6 mt-16">
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body text-center">
+      <h2 class="text-2xl font-bold text-primary">Candidate Screening</h2>
+
+      <p>Evaluate applicant profiles against role requirements.</p>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body text-center">
+      <h2 class="text-2xl font-bold text-primary">Talent Discovery</h2>
+
+      <p>Identify qualified candidates more efficiently.</p>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body text-center">
+      <h2 class="text-2xl font-bold text-primary">Hiring Insights</h2>
+
+      <p>Support recruitment decisions with structured evaluations.</p>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body text-center">
+      <h2 class="text-2xl font-bold text-primary">Career Development</h2>
+
+      <p>Help professionals prepare for future opportunities.</p>
+    </div>
+  </div>
+</div> {% endcomment %}
+
+<div class="mt-24">
+  <div class="text-center mb-12">
+    <h2 class="text-5xl font-bold">Everything Needed for Modern Hiring</h2>
+
+    <p class="text-gray-500 mt-4">
+      Built to support recruitment teams and job seekers throughout the hiring
+      process.
+    </p>
+  </div>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <div
+      class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300"
+    >
+      <div class="card-body">
+        <div class="text-5xl">📋</div>
+
+        <h2 class="card-title">Candidate Screening</h2>
+
+        <p>
+          Review candidate qualifications and compare applicants against job
+          requirements.
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300"
+    >
+      <div class="card-body">
+        <div class="text-5xl">🔍</div>
+
+        <h2 class="card-title">Talent Discovery</h2>
+
+        <p>
+          Search and identify candidates who align with organizational needs.
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300"
+    >
+      <div class="card-body">
+        <div class="text-5xl">📊</div>
+
+        <h2 class="card-title">Hiring Recommendations</h2>
+
+        <p>
+          Receive structured insights to support shortlisting and hiring
+          decisions.
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300"
+    >
+      <div class="card-body">
+        <div class="text-5xl">🎯</div>
+
+        <h2 class="card-title">Interview Planning</h2>
+
+        <p>
+          Prepare role-specific interview discussions and evaluation points.
+        </p>
       </div>
     </div>
   </div>
 </div>
 
-<div class="grid md:grid-cols-3 gap-8 mt-16">
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title">AI Resume Screening</h2>
+<div
+  class="mt-24 rounded-3xl bg-primary text-primary-content p-16 text-center shadow-2xl"
+>
+  <h2 class="text-5xl font-black">Ready to Get Started?</h2>
 
-      <p>
-        Semantic ranking and ATS-powered resume analysis using advanced AI
-        embeddings and retrieval systems.
-      </p>
-    </div>
-  </div>
+  <p class="mt-6 text-lg max-w-2xl mx-auto">
+    Create an account and start managing hiring workflows or preparing for your
+    next career opportunity.
+  </p>
 
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title">Recruiter Intelligence</h2>
-
-      <p>
-        AI-driven recruiter workflows with candidate ranking, feedback
-        generation, and interview assistance.
-      </p>
-    </div>
-  </div>
-
-  <div class="card bg-base-100 shadow-xl">
-    <div class="card-body">
-      <h2 class="card-title">Candidate Career Support</h2>
-
-      <p>
-        Personalized ATS feedback and interview preparation tailored to
-        candidate resumes and career goals.
-      </p>
-    </div>
-  </div>
+  <a
+    href="/accounts/register/"
+    class="btn btn-lg bg-white text-primary mt-8 border-none"
+  >
+    Create Account
+  </a>
 </div>
 
 {% endblock %}

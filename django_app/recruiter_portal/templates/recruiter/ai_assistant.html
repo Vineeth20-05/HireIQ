@@ -1,49 +1,84 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="max-w-5xl mx-auto">
-  <div class="mb-10">
-    <h1 class="text-5xl font-extrabold text-primary">AI Hiring Assistant</h1>
-
-    <p class="text-gray-500 mt-3 text-lg">
-      Ask AI to identify the best candidates using semantic resume intelligence.
+<div class="max-w-6xl mx-auto">
+  <div class="text-center mb-12">
+    <h1 class="text-6xl font-black text-primary">Talent Search</h1>
+    <p class="text-gray-500 mt-4 text-xl max-w-3xl mx-auto">
+      Search candidate profiles, explore qualifications, and identify
+      individuals who best align with hiring requirements.
     </p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-8 mb-12">
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="text-5xl">🔍</div>
+        <h2 class="card-title">Candidate Discovery</h2>
+        <p>
+          Explore candidate profiles using hiring criteria and role-specific
+          requirements.
+        </p>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="text-5xl">📊</div>
+        <h2 class="card-title">Qualification Review</h2>
+        <p>Compare candidate skills, experience, and role alignment.</p>
+      </div>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <div class="text-5xl">🎯</div>
+        <h2 class="card-title">Hiring Recommendations</h2>
+        <p>
+          Receive structured recommendations to support candidate shortlisting.
+        </p>
+      </div>
+    </div>
   </div>
 
   <div class="card bg-base-100 shadow-2xl mb-10">
     <div class="card-body">
-      <form method="POST" class="space-y-6">
-        {% csrf_token %}
+      <h2 class="card-title text-3xl">Candidate Search</h2>
+      <p class="text-gray-500">
+        Ask hiring-related questions and discover candidates who best match your
+        recruitment needs.
+      </p>
 
+      <form method="POST" class="space-y-6 mt-6">
+        {% csrf_token %}
         <textarea
           name="query"
           class="textarea textarea-bordered h-40 w-full text-lg"
-          placeholder="Example: Find best candidate for Django backend development with cloud experience"
+          placeholder="Example: Identify candidates suitable for a Senior Java Developer position with cloud experience."
         ></textarea>
-
-        <button class="btn btn-primary btn-lg">Analyze Candidates</button>
+        <button class="btn btn-primary btn-lg">Search Candidates</button>
       </form>
     </div>
   </div>
 
   {% if response %}
-
   <div class="card bg-base-100 shadow-2xl">
     <div class="card-body">
-      <h2 class="card-title text-3xl text-primary">AI Hiring Recommendation</h2>
+      <h2 class="card-title text-3xl text-primary">Candidate Recommendation</h2>
+      <p class="text-gray-500">
+        Results based on uploaded candidate profiles and recruitment
+        requirements.
+      </p>
 
       <div class="divider"></div>
 
-      <div class="bg-base-200 rounded-2xl p-8">
+      <div class="bg-base-200 rounded-2xl p-8 border border-base-300">
         <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
-
 {{ response }}
-
                 </pre
         >
       </div>
     </div>
   </div>
-
   {% endif %}
 </div>
 
