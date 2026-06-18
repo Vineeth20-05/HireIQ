@@ -105,30 +105,24 @@ def candidate_analysis(request, candidate_name):
     
 @login_required
 def interview_assistant(request):
-    interview_questions=None
+
+    interview_questions=[]
+
     if request.method=="POST":
         jd_text=request.POST.get("jd_text")
-        response=requests.get(
-            "http://127.0.0.1:8001/recruiter-interview",
-            params={"query":jd_text}
-        )
-        interview_questions=response.json()["interview_questions"]
-    return render(
-        request,
-        'recruiter/interview_assistant.html',
-        {
-            'interview_questions':interview_questions
-        }
-    )
-    
+        response=requests.get("http://127.0.0.1:8001/recruiter-interview",params={"query":jd_text})
+        interview_questions=response.json().get("questions",[])
+
+    return render(request,"recruiter/interview_assistant.html",{"interview_questions":interview_questions})
+
+
 @login_required
 def ai_hiring_assistant(request):
-    response = None
-    if request.method == "POST":
-        query = request.POST.get("query")
-        rag_response = requests.get("http://127.0.0.1:8001/rag", params={"query": query, "user_id":str(request.user.id)})
-        response = rag_response.json()["response"]
-
-    return render(request, "recruiter/ai_assistant.html", {"response": response})
+    candidates=[]
+    if request.method=="POST":
+        query=request.POST.get("query")
+        response=requests.get("http://127.0.0.1:8001/rag",params={"query":query,"user_id":str(request.user.id)})
+        candidates=response.json().get("top_candidates",[])
+    return render(request,"recruiter/ai_assistant.html",{"candidates":candidates})
 
     

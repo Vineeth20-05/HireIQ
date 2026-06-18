@@ -10,6 +10,8 @@ import uuid
 from langgraph_workflow import workflow
 from llm_config import llm
 from ats_service import generate_ats_feedback
+from talent_search_service import talent_search
+from interview_service import generate_interview_plan
 
 hf_token = os.getenv("HF_TOKEN")
 
@@ -64,13 +66,14 @@ def search_resumes(query: str):
     return {"results": retrieved_resumes}
 
 @app.get("/rag")
-def rag_query(query: str, user_id: str):
-    result = workflow.invoke({
-        "query": query,
-        "user_id": user_id
-    })
-    return {"response": result["final_response"]}
-
+def rag_query(query:str,user_id:str):
+    docs=vector_store.similarity_search(query=query,k=20,filter={"user_id":user_id})
+    candidates=[]
+    for doc in docs:
+        candidates.append({
+            "candidate_name":doc.metadata.get("candidate_name"),
+            "resume":doc.page_content})
+    return talent_search(query=query,candidates=candidates)
 
 @app.get("/rank")
 def rank_candidates(jd:str,user_id: str,limit: int = 5):
@@ -217,67 +220,11 @@ def generate_interview_questions(query:str):
     response=llm.invoke(prompt)
     return {"interview_questions":response.content}
 
+
 @app.get("/recruiter-interview")
-def recruiter_interview(query: str):
-    prompt = f"""
-    You are a Principal Engineering Interviewer responsible for creating interview assessments for top technology companies.
+def recruiter_interview(query:str):
+    return generate_interview_plan(query)
 
-    Analyze the recruiter's request and generate a professional interview evaluation set.
-
-    Rules:
-
-    1. If recruiter specifies a number, generate EXACTLY that many questions.
-
-    2. If no number is specified, generate 10 questions.
-
-    3. Questions must align with:
-    - Job role
-    - Seniority level
-    - Required technologies
-    - Industry expectations
-
-    4. For coding assessments:
-    - Generate interview-grade problems
-    - Provide optimal solution
-    - Include complete working code
-    - Include time complexity
-    - Include space complexity
-    - Include interviewer evaluation points
-
-    5. For technical interviews:
-    - Focus on practical engineering scenarios
-    - Include debugging questions
-    - Include architecture questions
-    - Include scalability questions where relevant
-
-    6. For behavioral interviews:
-    - Focus on ownership
-    - Leadership
-    - Conflict resolution
-    - Stakeholder communication
-    - Decision making
-
-    Return STRICTLY:
-
-    QUESTION:
-    (question)
-
-    SKILL_EVALUATED:
-    (skill being tested)
-
-    EXPECTED_ANSWER:
-    (1-2 lines)
-
-    INTERVIEWER_NOTE:
-    (what a strong candidate should mention)
-
-    Recruiter Request:
-    {query}
-    """
-    response = llm.invoke(prompt)
-    return {
-        "interview_questions": response.content
-    }
     
 @app.delete("/clear")
 def clear_vector_db():

@@ -10,12 +10,14 @@
       </p>
     </div>
 
-    {% comment %} <a
+    {% comment %}
+    <a
       href="/recruiter/dashboard/"
       class="btn btn-primary btn-lg font-bold shadow-md hover:scale-105 transition-transform"
     >
       ⬅ Screening
-    </a> {% endcomment %}
+    </a>
+    {% endcomment %}
   </div>
 
   <div class="grid md:grid-cols-3 gap-8 mb-10">
@@ -58,7 +60,7 @@
         position.
       </p>
 
-      <form method="POST" class="space-y-6 mt-6">
+      <form id="interviewForm" method="POST" class="space-y-6 mt-6">
         {% csrf_token %}
         <div>
           <label class="label">
@@ -79,24 +81,101 @@
   </div>
 
   {% if interview_questions %}
-  <div class="card bg-base-100 shadow-2xl mt-10">
-    <div class="card-body">
-      <h2 class="card-title text-3xl text-primary">Interview Question Guide</h2>
-      <p class="text-gray-500">
-        Structured questions prepared for candidate evaluation.
-      </p>
 
-      <div class="divider"></div>
+  <div class="mt-10">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-4xl font-black text-primary">
+        Interview Assessment Plan
+      </h2>
 
-      <div class="bg-base-200 rounded-2xl p-8 border border-base-300">
-        <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
-{{ interview_questions }}
-                </pre
-        >
+      <div class="badge badge-primary badge-lg">
+        {{ interview_questions|length }} Questions
       </div>
     </div>
+
+    <div class="space-y-6">
+      {% for q in interview_questions %}
+
+      <div class="card bg-base-100 shadow-xl border border-base-300">
+        <div class="card-body">
+          <div class="flex flex-wrap gap-2 mb-4">
+            <div class="badge badge-primary">{{ q.type }}</div>
+
+            <div class="badge badge-secondary">{{ q.skill }}</div>
+
+            <div class="badge badge-accent">{{ q.difficulty }}</div>
+          </div>
+
+          <h2 class="text-2xl font-black leading-relaxed">
+            {{ forloop.counter }}. {{ q.question }}
+          </h2>
+
+          <div class="divider"></div>
+
+          <div class="alert alert-success mt-4">
+            <div>
+              <h3 class="font-bold">Expected Answer</h3>
+              <p>{{ q.expected_answer }}</p>
+            </div>
+          </div>
+
+          {% if q.sample_code %}
+
+          <h3 class="font-bold text-info mt-4">Sample Solution</h3>
+
+          <div class="mockup-code mt-4">
+            <pre><code>{{ q.sample_code }}</code></pre>
+          </div>
+
+          <div class="flex gap-3 mt-4">
+            <div class="badge badge-outline">Time: {{ q.time_complexity }}</div>
+
+            <div class="badge badge-outline">
+              Space: {{ q.space_complexity }}
+            </div>
+          </div>
+
+          {% endif %}
+
+          <div class="alert alert-warning mt-4">
+            <div>
+              <h3 class="font-bold">Interviewer Note</h3>
+              <p>{{ q.interviewer_note }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
   </div>
+
   {% endif %}
 </div>
+
+<div
+  id="loadingOverlay"
+  class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center"
+>
+  <div class="bg-base-100 p-10 rounded-3xl shadow-2xl text-center w-96">
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+
+    <h2 class="text-3xl font-bold mt-5">HireIQ Interview Planner</h2>
+
+    <p class="mt-4 text-base-content/70">Analyzing Job Requirements...</p>
+
+    <p class="mt-2 text-base-content/70">Creating Assessment Plan...</p>
+
+    <p class="mt-2 text-base-content/70">Generating Interview Questions...</p>
+  </div>
+</div>
+
+<script>
+  document
+    .getElementById("interviewForm")
+    .addEventListener("submit", function () {
+      document.getElementById("loadingOverlay").classList.remove("hidden");
+    });
+</script>
 
 {% endblock %}
