@@ -1,11 +1,14 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="max-w-6xl mx-auto">
+<div class="max-w-7xl mx-auto">
+  <!-- Header -->
+
   <div class="flex justify-between items-center mb-10">
     <div>
       <h1 class="text-5xl font-black">{{ candidate_name }}</h1>
+
       <p class="text-gray-500 mt-3 text-lg">
-        Candidate evaluation report and recruitment assessment.
+        AI-Powered Candidate Evaluation Report
       </p>
     </div>
 
@@ -13,50 +16,257 @@
       ⬅ Back to Screening
     </a>
   </div>
+  <!-- ATS SCORE -->
 
-  <div class="stats shadow w-full mb-10">
-    <div class="stat">
-      <div class="stat-figure text-primary text-4xl">📄</div>
-      <div class="stat-title">Profile Review</div>
-      <div class="stat-value text-primary">Complete</div>
-      <div class="stat-desc">Candidate qualification assessment</div>
+<div class="flex flex-col items-center justify-center">
+
+    <div class="relative w-52 h-52">
+
+        <!-- Outer Ring -->
+
+        <div
+            class="
+            absolute
+            inset-0
+            rounded-full
+            border-[10px]
+
+            {% if feedback.ats_score >= 80 %}
+                border-success/30
+            {% elif feedback.ats_score >= 60 %}
+                border-info/30
+            {% else %}
+                border-error/30
+            {% endif %}
+            ">
+        </div>
+
+        <!-- Inner Circle -->
+
+        <div
+            class="
+            absolute
+            inset-3
+            rounded-full
+            bg-base-100
+            shadow-xl
+            ">
+
+            <!-- Perfectly Centered Score -->
+
+            <div
+                class="
+                absolute
+                inset-0
+                flex
+                items-center
+                justify-center
+                ">
+
+                <h1
+                    id="scoreCounter"
+                    class="
+                    text-6xl
+                    font-black
+                    leading-none
+
+                    {% if feedback.ats_score >= 80 %}
+                        text-success
+                    {% elif feedback.ats_score >= 60 %}
+                        text-info
+                    {% else %}
+                        text-error
+                    {% endif %}
+                    ">
+                    0%
+                </h1>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="stat">
-      <div class="stat-figure text-success text-4xl">🎯</div>
-      <div class="stat-title">Evaluation Status</div>
-      <div class="stat-value text-success">Reviewed</div>
-      <div class="stat-desc">Recruitment recommendation available</div>
+    <!-- Label Below Circle -->
+
+    <div class="mt-4 text-center">
+
+        <p
+            class="
+            text-sm
+            font-bold
+            uppercase
+            tracking-widest
+            text-primary
+            ">
+            ATS MATCH SCORE
+        </p>
+
     </div>
 
-    <div class="stat">
-      <div class="stat-figure text-warning text-4xl">📊</div>
-      <div class="stat-title">Assessment</div>
-      <div class="stat-value text-warning">Ready</div>
-      <div class="stat-desc">Candidate insights generated</div>
+</div>
+
+        <!-- Right Section -->
+
+        <div>
+          {% if feedback.recommendation == "Strong Hire" %}
+
+          <div class="badge badge-success badge-lg p-5 text-lg font-bold">
+            🏆 Strong Hire
+          </div>
+
+          {% elif feedback.recommendation == "Hire" %}
+
+          <div class="badge badge-info badge-lg p-5 text-lg font-bold">
+            ✅ Hire
+          </div>
+
+          {% elif feedback.recommendation == "Consider" %}
+
+          <div class="badge badge-warning badge-lg p-5 text-lg font-bold">
+            ⚡ Consider
+          </div>
+
+          {% else %}
+
+          <div class="badge badge-error badge-lg p-5 text-lg font-bold">
+            ❌ Reject
+          </div>
+
+          {% endif %}
+
+          <div class="stats shadow mt-6 w-full">
+            <div class="stat">
+              <div class="stat-title">Experience Alignment</div>
+
+              <div
+                class="stat-value text-2xl {% if feedback.experience_alignment == 'Excellent' %} text-success {% elif feedback.experience_alignment == 'Good' %} text-info {% elif feedback.experience_alignment == 'Average' %} text-warning {% else %} text-error {% endif %}"
+              >
+                {{ feedback.experience_alignment }}
+              </div>
+            </div>
+
+            <div class="stat">
+              <div class="stat-title">Project Quality</div>
+
+              <div
+                class="stat-value text-2xl {% if feedback.project_quality == 'Excellent' %} text-success {% elif feedback.project_quality == 'Good' %} text-info {% elif feedback.project_quality == 'Average' %} text-warning {% else %} text-error {% endif %}"
+              >
+                {{ feedback.project_quality }}
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <h3 class="font-bold text-xl mb-3">Executive Summary</h3>
+
+            <p class="text-gray-500 leading-8">{{ feedback.summary }}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="card bg-base-100 shadow-2xl">
-    <div class="card-body">
-      <h2 class="card-title text-3xl text-primary">
-        Candidate Evaluation Report
-      </h2>
-      <p class="text-gray-500">
-        Detailed assessment of candidate qualifications, strengths, and role
-        alignment.
-      </p>
+  <!-- Skills -->
 
-      <div class="divider"></div>
+  <div class="grid md:grid-cols-2 gap-8 mb-8">
+    <!-- Matched Skills -->
 
-      <div class="bg-base-200 rounded-2xl p-8 border border-base-300">
-        <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
-{{ analysis }}
-                </pre
-        >
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title text-success text-2xl">✅ Matched Skills</h2>
+
+        <div class="flex flex-wrap gap-3 mt-4">
+          {% for skill in feedback.matched_skills %}
+
+          <div class="badge badge-success badge-lg p-5">{{ skill }}</div>
+
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Missing Skills -->
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title text-error text-2xl">⚠ Missing Skills</h2>
+
+        <div class="flex flex-wrap gap-3 mt-4">
+          {% for skill in feedback.missing_skills %}
+
+          <div class="badge badge-error badge-lg p-5">{{ skill }}</div>
+
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Strengths and Risks -->
+
+  <div class="grid md:grid-cols-2 gap-8">
+    <!-- Strengths -->
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title text-success text-2xl">🚀 Key Strengths</h2>
+
+        <ul class="space-y-4 mt-4">
+          {% for strength in feedback.strengths %}
+
+          <li class="flex gap-3">
+            <span class="text-success">✓</span>
+
+            <span>{{ strength }}</span>
+          </li>
+
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Risks -->
+
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title text-warning text-2xl">⚠ Hiring Risks</h2>
+
+        <ul class="space-y-4 mt-4">
+          {% for risk in feedback.risks %}
+
+          <li class="flex gap-3">
+            <span class="text-warning">⚠</span>
+
+            <span>{{ risk }}</span>
+          </li>
+
+          {% endfor %}
+        </ul>
       </div>
     </div>
   </div>
 </div>
+
+<!-- ATS Score Animation -->
+
+<script>
+
+  let score = {{ feedback.ats_score }};
+  let current = 0;
+
+  const counter = setInterval(() => {
+
+      current++;
+
+      document.getElementById("scoreCounter")
+        .innerText = current + "%";
+
+      if (current >= score) {
+          clearInterval(counter);
+      }
+
+  }, 15);
+</script>
 
 {% endblock %}

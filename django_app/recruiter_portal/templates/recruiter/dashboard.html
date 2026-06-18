@@ -62,7 +62,12 @@
       compare applicants, and identify suitable candidates.
     </p>
 
-    <form method="POST" enctype="multipart/form-data" class="space-y-6 mt-6">
+    <form
+      id="evaluationForm"
+      method="POST"
+      enctype="multipart/form-data"
+      class="space-y-6 mt-6"
+    >
       {% csrf_token %}
 
       <div>
@@ -86,7 +91,9 @@
         {{ form.shortlist_count }}
       </div>
 
-      <button class="btn btn-primary btn-lg">Evaluate Candidates</button>
+      <button id="evaluateBtn" class="btn btn-primary btn-lg">
+        Evaluate Candidates
+      </button>
     </form>
   </div>
 </div>
@@ -140,9 +147,9 @@
               </a>
               <a
                 href="/recruiter/analysis/{{ candidate.candidate_name }}?jd={{ request.POST.jd_text }}"
-                class="btn btn-sm btn-primary"
+                class="btn btn-sm btn-primary analysis-btn"
               >
-                Evaluation Report
+                Analyze
               </a>
             </td>
           </tr>
@@ -164,4 +171,40 @@
     </div>
   </div>
 </div>
-{% endif %} {% endblock %}
+{% endif %}
+
+<div
+  id="loadingOverlay"
+  style="display: none"
+  class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center"
+>
+  <div class="bg-base-100 p-10 rounded-3xl shadow-2xl text-center w-96">
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+
+    <h2 class="text-3xl font-bold mt-5">HireIQ AI Engine</h2>
+
+    <p class="mt-4 text-base-content/70">Extracting Resume Skills...</p>
+
+    <p class="mt-2 text-base-content/70">Matching Job Requirements...</p>
+
+    <p class="mt-2 text-base-content/70">Ranking Candidates...</p>
+
+    <p class="mt-2 text-base-content/70">Generating ATS Analysis...</p>
+  </div>
+</div>
+
+<script>
+  document
+    .getElementById("evaluationForm")
+    .addEventListener("submit", function () {
+      document.getElementById("loadingOverlay").style.display = "flex";
+
+      const btn = document.getElementById("evaluateBtn");
+      btn.disabled = true;
+      btn.innerHTML = `
+        <span class="loading loading-spinner loading-sm"></span>
+        Processing...
+    `;
+    });
+</script>
+{% endblock %}

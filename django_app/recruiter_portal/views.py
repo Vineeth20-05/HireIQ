@@ -84,22 +84,22 @@ def recruiter_dashboard(request):
     })
 
 @login_required
-def candidate_analysis(request,candidate_name):
-    jd=request.GET.get("jd")
-    feedback_response=requests.get(
+def candidate_analysis(request, candidate_name):
+    jd = request.GET.get("jd")
+    feedback_response = requests.get(
         "http://127.0.0.1:8001/feedback",
         params={
-            "candidate_name":candidate_name,
-            "query":jd
+            "candidate_name": candidate_name,
+            "query": jd
         }
     )
-    feedback=feedback_response.json()["feedback"]
+    feedback = feedback_response.json()
     return render(
         request,
-        'recruiter/analysis.html',
+        "recruiter/analysis.html",
         {
-            'candidate_name':candidate_name,
-            'analysis':feedback
+            "candidate_name": candidate_name,
+            "feedback": feedback
         }
     )
     

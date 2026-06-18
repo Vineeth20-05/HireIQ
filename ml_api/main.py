@@ -2,13 +2,14 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-import os
+import os,re
 import uvicorn
 from chroma_utils import vector_store, client, embedding_model
 from langchain_chroma import Chroma
 import uuid
 from langgraph_workflow import workflow
 from llm_config import llm
+from ats_service import generate_ats_feedback
 
 hf_token = os.getenv("HF_TOKEN")
 
@@ -93,110 +94,70 @@ def rank_candidates(jd:str,user_id: str,limit: int = 5):
 
 @app.get("/feedback")
 def ats_feedback(candidate_name:str,query:str):
-    results = vector_store.similarity_search(
+    results=vector_store.similarity_search(
         query=query,
-        k=5
-    )
-    context = ""
+        k=5)
+    context=""
     for doc in results:
-        if doc.metadata.get("candidate_name") == candidate_name:
-            context = doc.page_content
+        if doc.metadata.get("candidate_name")==candidate_name:
+            context=doc.page_content
             break
+    return generate_ats_feedback(
+        context=context,
+        query=query
+    )
 
-    prompt = f"""
-    You are a senior technical recruiter working at a top product-based company.
-
-    Your task is to evaluate the candidate resume against the provided job description exactly like a real recruiter performing ATS screening.
-
-    Evaluation Guidelines:
-    - Be concise and highly practical
-    - Focus only on hiring-relevant insights
-    - Avoid generic AI explanations
-    - Prioritize technical alignment, experience relevance, and project quality
-    - Do not praise unnecessarily
-    - Think like a recruiter reviewing hundreds of resumes quickly
-    - Keep every point within 1 short line
-
-    Return STRICTLY in this format:
-
-    ATS SCORE:
-    (Realistic ATS score out of 100)
-
-    KEY STRENGTHS:
-    - strongest matching skills
-    - strongest relevant experience
-    - strongest relevant project/domain
-
-    MISSING REQUIREMENTS:
-    - important missing skill
-    - important missing tool/framework
-    - important missing experience
-
-    HIRING CONCERNS:
-    - practical recruiter concern
-    - practical recruiter concern
-
-    FINAL DECISION:
-    (Hire / Consider / Reject)
-
-    REASON:
-    (1-line recruiter justification)
-
-    Job Description:
-    {query}
-
-    Candidate Resume:
-    {context}
-    """
-
-    response = llm.invoke(prompt)
-    return {
-        "feedback": response.content
-    }
     
 @app.post("/candidate-feedback")
 def candidate_feedback(data: MatchRequest):
-
     prompt = f"""
-    You are an expert AI career coach and ATS resume strategist.
+    You are a Senior Career Strategist, ATS Consultant, and Hiring Coach.
 
-    Your task is to help the candidate improve resume shortlisting chances for the given job role.
+    Your objective is to maximize the candidate's interview conversion rate and ATS shortlisting probability.
 
-    Guidelines:
-    - Speak directly to the candidate
-    - Focus on actionable improvements
-    - Avoid generic motivational language
-    - Keep advice concise and practical
-    - Prioritize ATS optimization and recruiter expectations
-    - Keep every point within 1 short line
-    - Suggest only high-impact improvements
+    Evaluation Criteria:
+    - ATS compatibility
+    - Skill alignment
+    - Missing requirements
+    - Resume quality
+    - Project relevance
+    - Industry readiness
 
-    Return STRICTLY in this format:
+    Rules:
+    - Focus on actionable improvements only
+    - Avoid generic motivation
+    - Think like both a recruiter and career advisor
+    - Prioritize high-impact improvements
+    - Every point should be concise and practical
 
-    ATS SCORE:
-    (score out of 100)
+    Return STRICTLY:
 
-    YOUR STRONG POINTS:
-    - strong matching skill
-    - strong matching project
-    - relevant experience
+    ATS_SCORE: <number>
 
-    YOU SHOULD IMPROVE:
-    - missing technical skill
-    - weak resume section
-    - missing practical exposure
+    MATCHED_SKILLS:
+    skill1, skill2, skill3, skill4
 
-    IMPORTANT KEYWORDS TO ADD:
-    - keyword
-    - keyword
-    - keyword
+    MISSING_SKILLS:
+    skill1, skill2, skill3
 
-    RESUME IMPROVEMENT TIPS:
-    - practical improvement
-    - practical improvement
+    ATS_KEYWORDS_TO_ADD:
+    keyword1, keyword2, keyword3
 
-    FINAL CAREER ADVICE:
-    (1-line realistic advice)
+    RESUME_STRENGTHS:
+    - point
+    - point
+    - point
+
+    IMPROVEMENT_ROADMAP:
+    - point
+    - point
+    - point
+
+    INTERVIEW_READINESS:
+    High / Medium / Low
+
+    CAREER_RECOMMENDATION:
+    Maximum 2 lines.
 
     Job Description:
     {data.jd_text}
@@ -215,64 +176,107 @@ def candidate_feedback(data: MatchRequest):
 def generate_interview_questions(query:str):
     results=vector_store.similarity_search(query=query,k=1)
     context="\n\n".join([doc.page_content for doc in results])
-    prompt=f"""
-    You are a senior technical interviewer at a top software company.
+    prompt = f"""
+    You are a Senior Software Engineering Interview Panel consisting of:
 
-    Generate the TOP 15 highest-priority interview questions the candidate must prepare for based on the resume and job description.
+    - Engineering Manager
+    - Technical Lead
+    - Senior Software Engineer
+    - Hiring Manager
 
-    Rules:
-    - Prioritize real-world interview questions
-    - Focus on the most likely questions asked in actual interviews
-    - Include technical + HR + project questions
-    - Keep answers concise and interview-ready
-    - Answers must sound natural for speaking in interviews
-    - Keep each answer within 1-2 lines maximum
-    - Avoid textbook explanations
+    Generate the 15 highest-priority interview questions the candidate is most likely to face based on BOTH the resume and job description.
 
-    Return format:
+    Guidelines:
+    - Prioritize actual interview questions used in industry
+    - Include project-based questions
+    - Include technical questions
+    - Include behavioral questions
+    - Include architecture questions when applicable
+    - Progress from moderate to advanced difficulty
+    - Avoid textbook theory questions
+    - Answers should sound natural when spoken
+    - Keep answers within 1-2 lines
 
-    1. Question
+    Return STRICTLY:
 
-    Answer:
-    (short practical interview answer)
+    QUESTION:
+    (question)
+
+    WHY_INTERVIEWER_ASKS:
+    (one short line)
+
+    MODEL_ANSWER:
+    (1-2 lines)
+
+    Resume:
+    {context}
 
     Job Description:
     {query}
-
-    Candidate Resume:
-    {context}
     """
     response=llm.invoke(prompt)
     return {"interview_questions":response.content}
 
 @app.get("/recruiter-interview")
-def recruiter_interview(query:str):
-    prompt=f"""
-    You are a senior engineering interviewer.
+def recruiter_interview(query: str):
+    prompt = f"""
+    You are a Principal Engineering Interviewer responsible for creating interview assessments for top technology companies.
 
-    Generate ONLY the TOP 10 highest-quality interview questions for evaluating candidates for this role.
+    Analyze the recruiter's request and generate a professional interview evaluation set.
 
-    Guidelines:
-    - Questions must be practical and realistic
-    - Focus on technical depth and problem-solving
-    - Include concise expected answers
-    - Avoid beginner-level trivia questions
-    - Keep answers within 1-2 lines
-    - Mix technical and behavioral questions
+    Rules:
 
-    Return format:
+    1. If recruiter specifies a number, generate EXACTLY that many questions.
 
-    1. Question
+    2. If no number is specified, generate 10 questions.
 
-    Expected Answer:
-    (short interviewer expectation)
+    3. Questions must align with:
+    - Job role
+    - Seniority level
+    - Required technologies
+    - Industry expectations
 
-    Job Description:
+    4. For coding assessments:
+    - Generate interview-grade problems
+    - Provide optimal solution
+    - Include complete working code
+    - Include time complexity
+    - Include space complexity
+    - Include interviewer evaluation points
+
+    5. For technical interviews:
+    - Focus on practical engineering scenarios
+    - Include debugging questions
+    - Include architecture questions
+    - Include scalability questions where relevant
+
+    6. For behavioral interviews:
+    - Focus on ownership
+    - Leadership
+    - Conflict resolution
+    - Stakeholder communication
+    - Decision making
+
+    Return STRICTLY:
+
+    QUESTION:
+    (question)
+
+    SKILL_EVALUATED:
+    (skill being tested)
+
+    EXPECTED_ANSWER:
+    (1-2 lines)
+
+    INTERVIEWER_NOTE:
+    (what a strong candidate should mention)
+
+    Recruiter Request:
     {query}
     """
-    response=llm.invoke(prompt)
+    response = llm.invoke(prompt)
     return {
-        "interview_questions":response.content
+        "interview_questions": response.content
     }
     
 @app.delete("/clear")
