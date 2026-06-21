@@ -7,7 +7,6 @@ import uvicorn
 from chroma_utils import vector_store, client, embedding_model
 from langchain_chroma import Chroma
 import uuid
-from langgraph_workflow import workflow
 from llm_config import llm
 from ats_service import generate_ats_feedback
 from talent_search_service import talent_search
@@ -66,14 +65,25 @@ def search_resumes(query: str):
     return {"results": retrieved_resumes}
 
 @app.get("/rag")
-def rag_query(query:str,user_id:str):
-    docs=vector_store.similarity_search(query=query,k=20,filter={"user_id":user_id})
-    candidates=[]
+def rag_query(query: str, user_id: str):
+
+    docs = vector_store.similarity_search(query=query, k=20, filter={"user_id": user_id})
+    print("DOCS FOUND:", len(docs))
+
+    candidates, seen = [], set()
     for doc in docs:
-        candidates.append({
-            "candidate_name":doc.metadata.get("candidate_name"),
-            "resume":doc.page_content})
-    return talent_search(query=query,candidates=candidates)
+        candidate_name = doc.metadata.get("candidate_name")
+        if not candidate_name or candidate_name in seen: continue
+        seen.add(candidate_name)
+        candidates.append({"candidate_name": candidate_name, "resume": doc.page_content})
+
+    print("UNIQUE CANDIDATES:", len(candidates))
+
+    result = talent_search(query=query, candidates=candidates)
+    print("TALENT SEARCH RESULT:", result)
+
+    return result
+
 
 @app.get("/rank")
 def rank_candidates(jd:str,user_id: str,limit: int = 5):
