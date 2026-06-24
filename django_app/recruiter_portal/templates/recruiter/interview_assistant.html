@@ -119,12 +119,37 @@
             </div>
           </div>
 
-          {% if q.sample_code %}
+          {% if q.type == "Coding" and q.sample_code|length > 0 %}
 
-          <h3 class="font-bold text-info mt-4">Sample Solution</h3>
+          <h3 class="font-bold text-info mt-5">Sample Solution</h3>
 
-          <div class="mockup-code mt-4">
-            <pre><code>{{ q.sample_code }}</code></pre>
+          <div class="relative mt-4">
+            <button
+              onclick="copyCode(this)"
+              class="absolute top-3 right-3 z-20 rounded-lg p-2 bg-base-300 hover:bg-primary hover:text-white transition"
+              title="Copy"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                class="w-5 h-5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2m-6 12h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"
+                />
+              </svg>
+            </button>
+
+            <div class="mockup-code">
+              <pre
+                class="overflow-x-auto p-6"
+              ><code class="whitespace-pre">{{ q.sample_code }}</code></pre>
+            </div>
           </div>
 
           <div class="flex gap-3 mt-4">
@@ -136,7 +161,6 @@
           </div>
 
           {% endif %}
-
           <div class="alert alert-warning mt-4">
             <div>
               <h3 class="font-bold">Interviewer Note</h3>
@@ -176,6 +200,21 @@
     .addEventListener("submit", function () {
       document.getElementById("loadingOverlay").classList.remove("hidden");
     });
+</script>
+<script>
+  function copyCode(button) {
+    const code = button.parentElement.querySelector("code").innerText;
+
+    navigator.clipboard.writeText(code);
+
+    const original = button.innerHTML;
+
+    button.innerHTML = "✓";
+
+    setTimeout(() => {
+      button.innerHTML = original;
+    }, 1500);
+  }
 </script>
 
 {% endblock %}

@@ -6,168 +6,202 @@ from llm_config import llm
 def generate_interview_plan(query):
 
     prompt=f"""
-    You are a Principal Engineering Manager, Senior Technical Interviewer, Hiring Manager, and Staff Software Engineer at a top technology company.
-    
-    Your responsibility is to create a professional interview assessment plan based on the recruiter's hiring requirements.
-    
-    ==================================================
-    OBJECTIVE
-    ==================================================
-    
-    Generate interview questions that realistically assess a candidate's ability to perform the role.
-    
-    Questions should reflect actual industry interviews rather than textbook exams.
-    
-    ==================================================
-    QUESTION GENERATION RULES
-    ==================================================
-    
-    1. Generate EXACTLY the number of questions requested by the recruiter.
-    
-    2. If no number is mentioned, generate 10 questions.
-    
-    3. Questions must be tailored to:
-    - Job Role
-    - Experience Level
-    - Technology Stack
-    - Responsibilities
-    - Industry Expectations
-    
-    4. Include a balanced mix of:
-    
-    - Coding
-    - Technical
-    - Project
-    - Debugging
-    - System Design
-    - Behavioral
-    
-    5. Questions should progressively increase in difficulty.
-    
-    6. Avoid theory-only questions.
-    
-    7. Focus on practical engineering situations.
-    
-    ==================================================
-    CODING QUESTIONS
-    ==================================================
-    
-    For coding questions:
-    
-    - Use interview-quality DSA or problem-solving questions.
-    - Provide optimal solution.
-    - Provide complete working Python code.
-    - Provide time complexity.
-    - Provide space complexity.
-    
-    ==================================================
-    TECHNICAL QUESTIONS
-    ==================================================
-    
-    Focus on:
-    
-    - Real-world backend development
-    - APIs
-    - Databases
-    - Cloud
-    - DevOps
-    - AI/ML
-    - Security
-    - Scalability
-    
-    depending on recruiter requirements.
-    
-    ==================================================
-    SYSTEM DESIGN QUESTIONS
-    ==================================================
-    
-    Focus on:
-    
-    - Architecture
-    - Scalability
-    - Performance
-    - Reliability
-    - Tradeoffs
-    
-    ==================================================
-    BEHAVIORAL QUESTIONS
-    ==================================================
-    
-    Focus on:
-    
-    - Ownership
-    - Leadership
-    - Teamwork
-    - Communication
-    - Conflict Resolution
-    - Decision Making
-    
-    ==================================================
-    EXPECTED ANSWERS
-    ==================================================
-    
-    Expected answers should be concise.
-    
-    Maximum 2 lines.
-    
-    ==================================================
-    INTERVIEWER NOTES
-    ==================================================
-    
-    Mention what a strong candidate should discuss.
-    
-    ==================================================
-    OUTPUT RULES
-    ==================================================
-    
-    Return ONLY valid JSON.
-    
-    Do NOT return markdown.
-    
-    Do NOT return explanations.
-    
-    Do NOT return text before JSON.
-    
-    Do NOT return text after JSON.
-    
-    Return STRICTLY:
-    
-    {{
-      "questions":[
-        {{
-          "question":"",
-          "type":"",
-          "skill":"",
-          "difficulty":"",
-          "expected_answer":"",
-          "sample_code":"",
-          "time_complexity":"",
-          "space_complexity":"",
-          "interviewer_note":""
-        }}
-      ]
-    }}
-    
-    Allowed values for type:
-    
-    - Coding
-    - Technical
-    - System Design
-    - Debugging
-    - Behavioral
-    - Project
-    
-    For non-coding questions:
-    
-    sample_code=""
-    time_complexity=""
-    space_complexity=""
-    
-    Recruiter Requirement:
-    
-    {query}
-    """
+You are a Principal Engineering Manager, Senior Technical Interviewer, Hiring Manager, and Staff Software Engineer at a top technology company.
 
+Your responsibility is to create a professional interview assessment plan based on the recruiter's hiring requirements.
+
+==================================================
+OBJECTIVE
+==================================================
+
+Generate interview questions that realistically assess a candidate's ability to perform the role.
+
+Questions should reflect actual industry interviews rather than textbook exams.
+
+==================================================
+QUESTION GENERATION RULES
+==================================================
+
+1. Generate EXACTLY the number of questions requested by the recruiter.
+
+2. If no number is mentioned, generate 10 questions.
+
+3. Questions must be tailored to:
+- Job Role
+- Experience Level
+- Technology Stack
+- Responsibilities
+- Industry Expectations
+
+4. Include a balanced mix of:
+
+- Coding
+- Technical
+- Project
+- Debugging
+- System Design
+- Behavioral
+
+5. Questions should progressively increase in difficulty.
+
+6. Avoid theory-only questions.
+
+7. Focus on practical engineering situations.
+
+==================================================
+CODING QUESTIONS
+==================================================
+
+For Coding questions:
+
+- Use interview-quality DSA or problem-solving questions.
+- Return the solution in the programming language requested by the recruiter.
+- If no language is specified, use Python.
+- Provide the optimal solution.
+- Provide complete working code.
+- Provide time complexity.
+- Provide space complexity.
+
+IMPORTANT CODE FORMATTING RULES
+
+- Never compress multiple statements into one line.
+- Every statement must appear on its own line.
+- Preserve every newline.
+- Preserve indentation.
+- Use standard formatting exactly like code written in VS Code.
+- Do NOT minify code.
+- Do NOT remove blank lines.
+- sample_code must contain properly formatted multiline code.
+
+Example:
+
+public class Main {{
+
+    public static int maxSubArraySum(int[] arr) {{
+
+        int current = 0;
+        int best = Integer.MIN_VALUE;
+
+        for (int value : arr) {{
+
+            current = Math.max(value, current + value);
+            best = Math.max(best, current);
+
+        }}
+
+        return best;
+
+    }}
+
+}}
+
+==================================================
+TECHNICAL QUESTIONS
+==================================================
+
+Focus on:
+
+- Real-world backend development
+- APIs
+- Databases
+- Cloud
+- DevOps
+- AI/ML
+- Security
+- Scalability
+
+depending on recruiter requirements.
+
+==================================================
+SYSTEM DESIGN QUESTIONS
+==================================================
+
+Focus on:
+
+- Architecture
+- Scalability
+- Performance
+- Reliability
+- Tradeoffs
+
+==================================================
+BEHAVIORAL QUESTIONS
+==================================================
+
+Focus on:
+
+- Ownership
+- Leadership
+- Teamwork
+- Communication
+- Conflict Resolution
+- Decision Making
+
+==================================================
+EXPECTED ANSWERS
+==================================================
+
+Expected answers should be concise.
+
+Maximum 2 lines.
+
+==================================================
+INTERVIEWER NOTES
+==================================================
+
+Mention what a strong candidate should discuss.
+
+==================================================
+OUTPUT RULES
+==================================================
+
+Return ONLY valid JSON.
+
+Do NOT return markdown.
+
+Do NOT return explanations.
+
+Do NOT return text before JSON.
+
+Do NOT return text after JSON.
+
+Return STRICTLY:
+
+{{
+    "questions":[
+        {{
+            "question":"",
+            "type":"",
+            "skill":"",
+            "difficulty":"",
+            "expected_answer":"",
+            "sample_code":"",
+            "time_complexity":"",
+            "space_complexity":"",
+            "interviewer_note":""
+        }}
+    ]
+}}
+
+Allowed values for type:
+
+- Coding
+- Technical
+- System Design
+- Debugging
+- Behavioral
+- Project
+
+For non-coding questions:
+
+sample_code=""
+time_complexity=""
+space_complexity=""
+
+Recruiter Requirement:
+
+{query}
+"""
     response=llm.invoke(prompt)
 
     print("RAW INTERVIEW RESPONSE:")
