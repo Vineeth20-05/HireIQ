@@ -1,46 +1,44 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="max-w-6xl mx-auto">
+<div class="max-w-7xl mx-auto">
+  <!-- HEADER -->
+
   <div class="mb-10">
     <h1 class="text-5xl font-black">Career Workspace</h1>
+
     <p class="text-gray-500 mt-3 text-lg">
       Review your resume, understand role requirements, and prepare for future
       career opportunities.
     </p>
   </div>
 
-  <div class="alert shadow-lg mb-10">
-    <div>
-      <h3 class="font-bold text-lg">Resume Review & Interview Preparation</h3>
-      <p>
-        Upload your resume and compare it against a target role to receive
-        structured feedback and interview preparation materials.
-      </p>
-    </div>
-  </div>
+  <!-- FORM -->
 
   <div class="card bg-base-100 shadow-2xl mb-10">
     <div class="card-body">
       <h2 class="card-title text-3xl">Resume Review</h2>
-      <p class="text-gray-500">
-        Upload your resume and a job description to evaluate profile alignment
-        and identify improvement opportunities.
-      </p>
 
-      <form method="POST" enctype="multipart/form-data" class="space-y-6 mt-6">
+      <form
+        id="resumeAnalysisForm"
+        method="POST"
+        enctype="multipart/form-data"
+        class="space-y-6 mt-6"
+      >
         {% csrf_token %}
 
         <div>
           <label class="label">
-            <span class="label-text text-lg">Resume</span>
+            <span class="label-text">Resume</span>
           </label>
+
           {{ form.resume }}
         </div>
 
         <div>
           <label class="label">
-            <span class="label-text text-lg">Job Description</span>
+            <span class="label-text">Job Description</span>
           </label>
+
           {{ form.jd_text }}
         </div>
 
@@ -50,48 +48,350 @@
   </div>
 
   {% if feedback %}
-  <div class="card bg-base-100 shadow-2xl mb-10">
+
+  <div class="card bg-base-100 shadow-2xl mb-8">
     <div class="card-body">
-      <h2 class="card-title text-3xl text-primary">Resume Evaluation Report</h2>
-      <p class="text-gray-500">
-        Insights and recommendations generated from your resume and target role
-        requirements.
-      </p>
+      <!-- ATS SCORE -->
 
-      <div class="divider"></div>
+      <div class="flex justify-center mb-10">
+        <div class="relative w-52 h-52">
+          <!-- Outer Ring -->
 
-      <div class="bg-base-200 rounded-2xl p-8 border border-base-300">
-        <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
-{{ feedback }}
-                </pre
-        >
+          <div
+            class="absolute inset-0 rounded-full border-[10px] {% if feedback.ats_score >= 80 %} border-success/30 {% elif feedback.ats_score >= 60 %} border-info/30 {% else %} border-error/30 {% endif %}"
+          ></div>
+
+          <!-- Inner Circle -->
+
+          <div class="absolute inset-3 rounded-full bg-base-100 shadow-xl">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <h1
+                id="scoreCounter"
+                class="text-6xl font-black {% if feedback.ats_score >= 80 %} text-success {% elif feedback.ats_score >= 60 %} text-info {% else %} text-error {% endif %}"
+              >
+                0%
+              </h1>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  {% endif %} {% if interview_questions %}
-  <div class="card bg-base-100 shadow-2xl">
-    <div class="card-body">
-      <h2 class="card-title text-3xl text-secondary">
-        Interview Readiness Guide
-      </h2>
-      <p class="text-gray-500">
-        Role-specific interview questions prepared to support your interview
-        preparation.
-      </p>
 
-      <div class="divider"></div>
+      <!-- ATS Progress Bar -->
 
-      <div
-        class="bg-base-200 rounded-2xl p-8 border border-base-300 max-h-[700px] overflow-y-auto"
-      >
-        <pre class="whitespace-pre-wrap text-base leading-8 font-sans">
-{{ interview_questions }}
-                </pre
-        >
+      <div class="flex justify-center mb-10">
+        <div class="text-center">
+          <progress
+            class="progress progress-success w-80"
+            value="{{ feedback.ats_score }}"
+            max="100"
+          ></progress>
+
+          <p class="mt-2 text-sm text-gray-500">ATS Compatibility Score</p>
+        </div>
+      </div>
+
+      <!-- RECOMMENDATION -->
+
+      <div class="text-center mb-10">
+        {% if feedback.recommendation == "Strong Hire" %}
+        <div class="badge badge-success badge-lg p-5">🏆 Strong Hire</div>
+
+        {% elif feedback.recommendation == "Hire" %}
+        <div class="badge badge-info badge-lg p-5">✅ Hire</div>
+
+        {% elif feedback.recommendation == "Consider" %}
+        <div class="badge badge-warning badge-lg p-5">⚡ Consider</div>
+
+        {% else %}
+        <div class="badge badge-error badge-lg p-5">❌ Reject</div>
+        {% endif %}
+      </div>
+
+      <div class="stats stats-vertical lg:stats-horizontal shadow mb-8 w-full">
+        <div class="stat">
+          <div class="stat-title">Experience Alignment</div>
+
+          <div class="stat-value text-success">
+            {{ feedback.experience_alignment }}
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-title">Project Quality</div>
+
+          <div class="stat-value text-info">{{ feedback.project_quality }}</div>
+        </div>
+      </div>
+      <!-- SUMMARY -->
+
+      <div class="card bg-base-100 shadow-xl mb-8">
+        <div class="card-body">
+          <h2 class="card-title">Executive Summary</h2>
+
+          <p>{{ feedback.summary }}</p>
+        </div>
+      </div>
+
+      <!-- ATS KEYWORDS -->
+
+      <div class="card bg-base-100 shadow-xl mb-8">
+        <div class="card-body">
+          <h2 class="card-title text-info">ATS Keywords To Add</h2>
+
+          <div class="flex flex-wrap gap-3">
+            {% for keyword in feedback.ats_keywords %}
+
+            <div class="badge badge-info badge-lg">{{ keyword }}</div>
+
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- SKILLS -->
+
+      <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <div class="card bg-base-100 shadow-xl border border-base-300">
+          <div class="card-body">
+            <h2 class="card-title text-success">Matched Skills</h2>
+
+            <div class="flex flex-wrap gap-2">
+              {% for skill in feedback.matched_skills %}
+
+              <div class="badge badge-success badge-lg">{{ skill }}</div>
+
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-base-100 shadow-xl border border-base-300">
+          <div class="card-body">
+            <h2 class="card-title text-error">Missing Skills</h2>
+
+            <div class="flex flex-wrap gap-2">
+              {% for skill in feedback.missing_skills %}
+
+              <div class="badge badge-error badge-lg">{{ skill }}</div>
+
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STRENGTHS + ROADMAP -->
+
+      <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <div class="card bg-base-100 shadow-xl border border-base-300">
+          <div class="card-body">
+            <h2 class="card-title text-success">Resume Strengths</h2>
+
+            <ul class="space-y-3">
+              {% for strength in feedback.strengths %}
+
+              <li>✓ {{ strength }}</li>
+
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <div class="card bg-base-100 shadow-xl border border-base-300">
+          <div class="card-body">
+            <h2 class="card-title text-warning">Improvement Roadmap</h2>
+
+            <ul class="space-y-3">
+              {% for item in feedback.roadmap %}
+
+              <li>→ {{ item }}</li>
+
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTERVIEW READINESS -->
+
+      <div class="stats shadow mb-10">
+        <div class="stat">
+          <div class="stat-title">Interview Readiness</div>
+
+          <div class="stat-value text-primary">
+            {{ feedback.interview_readiness }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
   {% endif %}
+
+  <!-- INTERVIEW QUESTIONS -->
+
+  {% if interview_questions %}
+
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-4xl font-black text-primary">Interview Readiness Guide</h2>
+
+    <div class="badge badge-primary badge-lg">
+      {{ interview_questions|length }} Questions
+    </div>
+  </div>
+
+  <div class="space-y-6">
+    {% for q in interview_questions %}
+
+    <div class="card bg-base-100 shadow-xl border border-base-300">
+      <div class="card-body">
+        <div class="flex gap-2 mb-4">
+          <div class="badge badge-primary">{{ q.type }}</div>
+
+          <div class="badge badge-secondary">{{ q.skill }}</div>
+
+          <div class="badge badge-accent">{{ q.difficulty }}</div>
+        </div>
+
+        <h2 class="text-xl font-bold">
+          {{ forloop.counter }}. {{ q.question }}
+        </h2>
+
+        <div class="divider"></div>
+
+        <div class="alert alert-success mt-4">
+          <div>
+            <h3 class="font-bold">Expected Answer</h3>
+            <p>{{ q.expected_answer }}</p>
+          </div>
+        </div>
+        <h3 class="font-bold text-info mt-5">Sample Solution</h3>
+
+        {% if q.type == "Coding" and q.sample_code|length > 0 %}
+
+        <h3 class="font-bold text-info mt-5">Sample Solution</h3>
+
+        <div class="relative mt-4">
+          <button
+            onclick="copyCode(this)"
+            class="absolute top-3 right-3 z-20 rounded-lg p-2 bg-base-300 hover:bg-primary hover:text-white transition"
+            title="Copy"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2m-6 12h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"
+              />
+            </svg>
+          </button>
+
+          <div class="mockup-code">
+            <pre
+              class="overflow-x-auto p-6"
+            ><code class="whitespace-pre">{{ q.sample_code }}</code></pre>
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-4">
+          <div class="badge badge-outline">Time: {{ q.time_complexity }}</div>
+
+          <div class="badge badge-outline">Space: {{ q.space_complexity }}</div>
+        </div>
+
+        {% endif %}
+        <div class="alert alert-warning mt-4">
+          <div>
+            <h3 class="font-bold">Interviewer Expectation</h3>
+
+            <p>{{ q.interviewer_note }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+  </div>
+
+  {% endif %}
 </div>
 
+<script>
+
+  let score={{ feedback.ats_score|default:0 }};
+  let current=0;
+
+  const counter=setInterval(()=>{
+
+  current++;
+
+  const element=document.getElementById("scoreCounter");
+
+  if(element){
+  element.innerText=current+"%";
+  }
+
+  if(current>=score){
+  clearInterval(counter);
+  }
+
+  },15);
+</script>
+<div
+  id="loadingOverlay"
+  class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center"
+>
+  <div class="bg-base-100 p-10 rounded-3xl shadow-2xl text-center w-96">
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+
+    <h2 class="text-3xl font-bold mt-5">HireIQ Career Assistant</h2>
+
+    <p class="mt-4 text-base-content/70">Analyzing Resume...</p>
+
+    <p class="mt-2 text-base-content/70">Comparing with Job Description...</p>
+
+    <p class="mt-2 text-base-content/70">Calculating ATS Score...</p>
+
+    <p class="mt-2 text-base-content/70">Generating Interview Preparation...</p>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("resumeAnalysisForm");
+
+    if (form) {
+      form.addEventListener("submit", () => {
+        document.getElementById("loadingOverlay").classList.remove("hidden");
+      });
+    }
+  });
+  window.addEventListener("pageshow", () => {
+    const overlay = document.getElementById("loadingOverlay");
+
+    if (overlay) {
+      overlay.classList.add("hidden");
+    }
+  });
+</script>
+<script>
+  function copyCode(button) {
+    const code = button.parentElement.querySelector("code").innerText;
+
+    navigator.clipboard.writeText(code);
+
+    const original = button.innerHTML;
+
+    button.innerHTML = "✓";
+
+    setTimeout(() => {
+      button.innerHTML = original;
+    }, 1500);
+  }
+</script>
 {% endblock %}

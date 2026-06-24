@@ -11,6 +11,8 @@ from llm_config import llm
 from ats_service import generate_ats_feedback
 from talent_search_service import talent_search
 from interview_service import generate_interview_plan
+from candidate_feedback_service import generate_candidate_feedback
+from candidate_interview_service import generate_candidate_interview_questions
 
 hf_token = os.getenv("HF_TOKEN")
 
@@ -107,129 +109,32 @@ def rank_candidates(jd:str,user_id: str,limit: int = 5):
 
 @app.get("/feedback")
 def ats_feedback(candidate_name:str,query:str):
-    results=vector_store.similarity_search(
-        query=query,
-        k=5)
+    results=vector_store.similarity_search(query=query,k=5)
     context=""
     for doc in results:
         if doc.metadata.get("candidate_name")==candidate_name:
             context=doc.page_content
             break
-    return generate_ats_feedback(
-        context=context,
-        query=query
-    )
-
+    return generate_ats_feedback(context=context,query=query)
     
 @app.post("/candidate-feedback")
 def candidate_feedback(data: MatchRequest):
-    prompt = f"""
-    You are a Senior Career Strategist, ATS Consultant, and Hiring Coach.
-
-    Your objective is to maximize the candidate's interview conversion rate and ATS shortlisting probability.
-
-    Evaluation Criteria:
-    - ATS compatibility
-    - Skill alignment
-    - Missing requirements
-    - Resume quality
-    - Project relevance
-    - Industry readiness
-
-    Rules:
-    - Focus on actionable improvements only
-    - Avoid generic motivation
-    - Think like both a recruiter and career advisor
-    - Prioritize high-impact improvements
-    - Every point should be concise and practical
-
-    Return STRICTLY:
-
-    ATS_SCORE: <number>
-
-    MATCHED_SKILLS:
-    skill1, skill2, skill3, skill4
-
-    MISSING_SKILLS:
-    skill1, skill2, skill3
-
-    ATS_KEYWORDS_TO_ADD:
-    keyword1, keyword2, keyword3
-
-    RESUME_STRENGTHS:
-    - point
-    - point
-    - point
-
-    IMPROVEMENT_ROADMAP:
-    - point
-    - point
-    - point
-
-    INTERVIEW_READINESS:
-    High / Medium / Low
-
-    CAREER_RECOMMENDATION:
-    Maximum 2 lines.
-
-    Job Description:
-    {data.jd_text}
-
-    Resume:
-    {data.resume_text}
-    """
-
-    response = llm.invoke(prompt)
-
-    return {
-        "feedback": response.content
-    }
+    return generate_candidate_feedback(
+        resume_text=data.resume_text,
+        jd_text=data.jd_text
+    )
     
 @app.get("/interview")
 def generate_interview_questions(query:str):
-    results=vector_store.similarity_search(query=query,k=1)
+    results=vector_store.similarity_search(
+        query=query,
+        k=1)
+    if not results:
+        return {"questions":[]}
     context="\n\n".join([doc.page_content for doc in results])
-    prompt = f"""
-    You are a Senior Software Engineering Interview Panel consisting of:
-
-    - Engineering Manager
-    - Technical Lead
-    - Senior Software Engineer
-    - Hiring Manager
-
-    Generate the 15 highest-priority interview questions the candidate is most likely to face based on BOTH the resume and job description.
-
-    Guidelines:
-    - Prioritize actual interview questions used in industry
-    - Include project-based questions
-    - Include technical questions
-    - Include behavioral questions
-    - Include architecture questions when applicable
-    - Progress from moderate to advanced difficulty
-    - Avoid textbook theory questions
-    - Answers should sound natural when spoken
-    - Keep answers within 1-2 lines
-
-    Return STRICTLY:
-
-    QUESTION:
-    (question)
-
-    WHY_INTERVIEWER_ASKS:
-    (one short line)
-
-    MODEL_ANSWER:
-    (1-2 lines)
-
-    Resume:
-    {context}
-
-    Job Description:
-    {query}
-    """
-    response=llm.invoke(prompt)
-    return {"interview_questions":response.content}
-
+    return generate_candidate_interview_questions(
+        context=context,
+        query=query)
 
 @app.get("/recruiter-interview")
 def recruiter_interview(query:str):
