@@ -16,21 +16,18 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-
   django:
     build:
       context: .
       dockerfile: django_app/Dockerfile
 
     container_name: hireiq_django
+
     restart: always
 
     depends_on:
       - postgres
       - ml_api
-
-    ports:
-      - "8000:8000"
 
     environment:
       DB_NAME: hireiq_db
@@ -40,10 +37,12 @@ services:
       DB_PORT: 5432
       ML_API_URL: http://ml_api:8001
 
-    volumes:
-      - ./django_app:/app
-      - ./django_app/media:/app/media
+    expose:
+      - "8000"
 
+    volumes:
+      - static_data:/app/staticfiles
+      - media_data:/app/media
 
   ml_api:
     build:
@@ -51,21 +50,36 @@ services:
       dockerfile: ml_api/Dockerfile
 
     container_name: hireiq_ml_api
+
     restart: always
 
-    ports:
-      - "8001:8001"
-
-    env_file:
-      - ./ml_api/.env
+    expose:
+      - "8001"
 
     volumes:
-      - ./ml_api:/app
       - chroma_data:/app/chroma_db
 
+  nginx:
+    image: nginx:latest
+
+    container_name: hireiq_nginx
+
+    restart: always
+
+    depends_on:
+      - django
+      - ml_api
+
+    ports:
+      - "80:80"
+
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - static_data:/app/staticfiles:ro
+      - media_data:/app/media:ro
 
 volumes:
-
   postgres_data:
-
   chroma_data:
+  static_data:
+  media_data:
