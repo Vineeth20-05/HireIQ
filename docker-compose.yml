@@ -1,0 +1,71 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: hireiq_postgres
+    restart: always
+
+    environment:
+      POSTGRES_DB: hireiq_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+  django:
+    build:
+      context: .
+      dockerfile: django_app/Dockerfile
+
+    container_name: hireiq_django
+    restart: always
+
+    depends_on:
+      - postgres
+      - ml_api
+
+    ports:
+      - "8000:8000"
+
+    environment:
+      DB_NAME: hireiq_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres123
+      DB_HOST: postgres
+      DB_PORT: 5432
+      ML_API_URL: http://ml_api:8001
+
+    volumes:
+      - ./django_app:/app
+      - ./django_app/media:/app/media
+
+
+  ml_api:
+    build:
+      context: .
+      dockerfile: ml_api/Dockerfile
+
+    container_name: hireiq_ml_api
+    restart: always
+
+    ports:
+      - "8001:8001"
+
+    env_file:
+      - ./ml_api/.env
+
+    volumes:
+      - ./ml_api:/app
+      - chroma_data:/app/chroma_db
+
+
+volumes:
+
+  postgres_data:
+
+  chroma_data:
