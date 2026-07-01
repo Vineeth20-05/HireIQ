@@ -5,7 +5,7 @@
     <!-- Left Side -->
     <div class="hidden lg:block">
       <h1 class="text-6xl font-black leading-tight">
-        Talent Intelligence Platform
+        Start Your Journey With HireIQ
       </h1>
       <p class="text-xl text-gray-500 mt-6 max-w-xl">
         HireIQ helps organizations streamline candidate evaluation and supports
@@ -47,46 +47,68 @@
 
     <!-- Login Card -->
     <div class="flex justify-center">
-      <div class="card w-full max-w-md bg-base-100 shadow-2xl">
+      <div
+        class="card w-full max-w-lg bg-base-100 border border-base-300 shadow-2xl"
+      >
         <div class="card-body p-10">
-          <div class="text-center mb-6">
-            <h1 class="text-4xl font-black text-primary">Welcome Back</h1>
-            <p class="text-gray-500 mt-2">Sign in to access your workspace</p>
+          <div class="text-center mb-8">
+            <h1 class="text-5xl font-black tracking-tight text-primary">
+              Welcome Back
+            </h1>
+
+            <p class="mt-3 text-base text-base-content/70">
+              Sign in to continue to your HireIQ workspace.
+            </p>
           </div>
 
           {% if form.errors %}
-          <div class="alert alert-error mb-6">
-            <span>Invalid username or password</span>
+          <div class="alert alert-error shadow-md mb-6">
+            <span> Invalid username or password. Please try again. </span>
           </div>
           {% endif %}
 
           <form method="POST" class="space-y-5">
             {% csrf_token %}
             <div>
-              <label class="label">
-                <span class="label-text">Username</span>
+              <label class="block mb-2">
+                <span
+                  class="text-sm font-semibold uppercase tracking-wide text-base-content"
+                >
+                  Username
+                </span>
               </label>
+
               <input
                 type="text"
                 name="username"
-                class="input input-bordered w-full"
+                value="{{ request.POST.username|default:'' }}"
                 placeholder="Enter username"
+                class="input input-bordered w-full {% if form.errors %}input-error{% endif %}"
               />
             </div>
 
             <div>
-              <label class="label">
-                <span class="label-text">Password</span>
+              <label class="block mb-2">
+                <span
+                  class="text-sm font-semibold uppercase tracking-wide text-base-content"
+                >
+                  Password
+                </span>
               </label>
+
               <input
                 type="password"
                 name="password"
-                class="input input-bordered w-full"
                 placeholder="Enter password"
+                class="input input-bordered w-full {% if form.errors %}input-error{% endif %}"
               />
             </div>
 
-            <button class="btn btn-primary w-full btn-lg">Sign In</button>
+            <button
+              class="btn btn-primary btn-lg w-full transition-all duration-300 hover:scale-[1.02] active:scale-95"
+            >
+              Sign In
+            </button>
           </form>
 
           <div class="divider">OR</div>

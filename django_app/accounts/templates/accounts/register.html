@@ -1,12 +1,13 @@
 {% extends 'base.html' %} {% block content %}
 
-<div class="min-h-[85vh] flex items-center justify-center">
-  <div class="grid lg:grid-cols-2 gap-16 items-center w-full max-w-7xl">
+<div class="min-h-[85vh] flex items-start justify-center pt-10">
+    <div class="grid lg:grid-cols-2 gap-16 items-start w-full max-w-7xl">
     <!-- Left Side -->
     <div class="hidden lg:block">
       <h1 class="text-6xl font-black leading-tight">
         Start Your Journey With HireIQ
       </h1>
+
       <p class="text-xl text-gray-500 mt-6 max-w-xl">
         Create an account to access recruitment tools, candidate evaluation
         workflows, resume reviews, and interview preparation resources.
@@ -47,80 +48,158 @@
 
     <!-- Registration Card -->
     <div class="flex justify-center">
-      <div class="card w-full max-w-md bg-base-100 shadow-2xl">
-        <div class="card-body p-10">
+      <div class="card w-full max-w-md bg-base-100 border border-base-300 shadow-2xl">
+        <div class="card-body p-7">
           <div class="text-center mb-6">
-            <h1 class="text-4xl font-black text-primary">Create Account</h1>
-            <p class="text-gray-500 mt-2">Sign up to access your workspace</p>
+            <h1 class="text-5xl font-black tracking-tight text-primary">
+    Create Account
+</h1>
+
+<p class="mt-3 text-base text-base-content/70">
+    Sign up to access your workspace
+</p>
           </div>
 
-          {% if form.errors %}
-          <div class="alert alert-error mb-6">
-            <span>There were errors with your submission</span>
-          </div>
-          {% endif %}
-
-          <form method="POST" class="space-y-5">
+          <form method="POST" class="space-y-4">
             {% csrf_token %}
 
+            <!-- Username -->
             <div>
-              <label class="label">
-                <span class="label-text">Username</span>
-              </label>
+              <label class="block mb-2">
+    <span class="text-sm font-semibold uppercase tracking-wide text-base-content">
+        Username
+    </span>
+</label>
+
               <input
                 type="text"
                 name="username"
-                class="input input-bordered w-full"
+                value="{{ form.username.value|default:'' }}"
                 placeholder="Enter username"
+                class="input input-bordered w-full {% if form.username.errors %}input-error{% endif %}"
               />
+
+              {% for error in form.username.errors %}
+              <p class="text-error text-sm mt-2">{{ error }}</p>
+              {% endfor %}
             </div>
 
+            <!-- Email -->
             <div>
-              <label class="label">
-                <span class="label-text">Email</span>
-              </label>
+              <label class="block mb-2">
+    <span class="text-sm font-semibold uppercase tracking-wide text-base-content">
+        Email
+    </span>
+</label>
+
               <input
                 type="email"
                 name="email"
-                class="input input-bordered w-full"
+                value="{{ form.email.value|default:'' }}"
                 placeholder="Enter email"
+                class="input input-bordered w-full {% if form.email.errors %}input-error{% endif %}"
               />
+
+              {% for error in form.email.errors %}
+              <p class="text-error text-sm mt-2">{{ error }}</p>
+              {% endfor %}
             </div>
 
+            <!-- Role -->
             <div>
-              <label class="label">
-                <span class="label-text">Password</span>
-              </label>
+              <label class="block mb-2">
+    <span class="text-sm font-semibold uppercase tracking-wide text-base-content">
+        Role
+    </span>
+</label>
+
+              <select
+                name="role"
+                class="select select-bordered w-full  {% if form.role.errors %}select-error{% endif %}"
+              >
+                <option value="">Select Role</option>
+
+                <option
+                  value="candidate"
+                  {%
+                  if
+                  form.role.value=""
+                  ="candidate"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  Candidate
+                </option>
+
+                <option
+                  value="recruiter"
+                  {%
+                  if
+                  form.role.value=""
+                  ="recruiter"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  Recruiter
+                </option>
+              </select>
+
+              {% for error in form.role.errors %}
+              <p class="text-error text-sm mt-2">{{ error }}</p>
+              {% endfor %}
+            </div>
+            <!-- Password -->
+            <div>
+              <label class="block mb-2">
+    <span class="text-sm font-semibold uppercase tracking-wide text-base-content">
+        Password
+    </span>
+</label>
               <input
                 type="password"
                 name="password1"
-                class="input input-bordered w-full"
                 placeholder="Enter password"
+                class="input input-bordered w-full {% if form.password1.errors %}input-error{% endif %}"
               />
+
+              {% for error in form.password1.errors %}
+              <p class="text-error text-sm mt-2">{{ error }}</p>
+              {% endfor %}
             </div>
 
+            <!-- Confirm Password -->
             <div>
-              <label class="label">
-                <span class="label-text">Confirm Password</span>
-              </label>
+              <label class="block mb-2">
+    <span class="text-sm font-semibold uppercase tracking-wide text-base-content">
+        Confirm Password
+    </span>
+</label>
+
               <input
                 type="password"
                 name="password2"
-                class="input input-bordered w-full"
                 placeholder="Confirm password"
+                class="input input-bordered w-full {% if form.password2.errors %}input-error{% endif %}"
               />
+
+              {% for error in form.password2.errors %}
+              <p class="text-error text-sm mt-2">{{ error }}</p>
+              {% endfor %}
             </div>
 
-            <button class="btn btn-primary w-full btn-lg">Sign Up</button>
+            <button class="btn btn-primary w-full">Sign Up</button>
           </form>
 
-          <div class="divider">OR</div>
+          <div class="divider" my-3>OR</div>
 
           <p class="text-center">
             Already have an account?
-            <a href="/accounts/login/" class="text-primary font-semibold"
-              >Sign In</a
-            >
+
+            <a href="/accounts/login/" class="text-primary font-semibold">
+              Sign In
+            </a>
           </p>
         </div>
       </div>
