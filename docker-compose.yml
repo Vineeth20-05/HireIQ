@@ -6,9 +6,9 @@ services:
     restart: always
 
     environment:
-      POSTGRES_DB: hireiq_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
 
     ports:
       - "5432:5432"
@@ -29,13 +29,16 @@ services:
       - postgres
       - ml_api
 
+    env_file:
+      - .env
+
     environment:
-      DB_NAME: hireiq_db
-      DB_USER: postgres
-      DB_PASSWORD: postgres123
-      DB_HOST: postgres
-      DB_PORT: 5432
-      ML_API_URL: http://ml_api:8001
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      ML_API_URL: ${ML_API_URL}
 
     expose:
       - "8000"
@@ -52,6 +55,9 @@ services:
     container_name: hireiq_ml_api
 
     restart: always
+
+    env_file:
+      - .env
 
     expose:
       - "8001"
