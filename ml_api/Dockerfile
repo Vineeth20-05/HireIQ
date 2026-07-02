@@ -5,11 +5,12 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY requirements-ml.txt .
 
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
+    pip install --index-url https://download.pytorch.org/whl/cpu torch==2.12.0 && \
+    pip install --no-cache-dir -r requirements-ml.txt
+    
 COPY ml_api/ .
 
 EXPOSE 8001
